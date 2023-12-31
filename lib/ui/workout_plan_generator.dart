@@ -230,7 +230,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable. "
                   "Example response format:\n"
                   "{\n"
-                  "  'name': 'Custom Workout Plan',\n"
+                  "  'name': 'Custom Workout Name',\n"
                   "  'exercises': [\n"
                   "    { 'name': 'ExerciseNameFromList', 'index': 1, 'numberOfSets': 3, 'exerciseSet': { 'exerciseSetType': 'StraightSet', 'restDurationInSeconds': 90, 'reps': 10 } },\n"
                   "    { 'name': 'AnotherExerciseNameFromList', 'index': 2, 'numberOfSets': 2, 'exerciseSet': { 'exerciseSetType': 'SuperSet', 'restDurationInSeconds': 60, 'firstExercise': {...}, 'secondExercise': {...} } }\n"

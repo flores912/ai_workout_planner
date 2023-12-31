@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import '../models/day.dart';
 import '../models/week.dart';
 import '../models/workout_plan.dart';
@@ -18,26 +17,32 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text(
-            'Description: ${workoutPlan.description}',
-            style: Theme.of(context).textTheme.subtitle1,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Description: ${workoutPlan.description}',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
           Divider(),
           ListTile(
-            title: Text('Week ${workoutPlan.numberOfWeeks}'),
+            title: Text('Week ${workoutPlan.weekSchedule.weekNumber ?? ''}'),
             subtitle: Text('Click on a day to see the workout details.'),
           ),
-          ..._buildDayTiles(workoutPlan.weekSchedule,context),
+          Expanded(
+            child: ListView(
+              children: _buildDayTiles(workoutPlan.weekSchedule, context),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  List<Widget> _buildDayTiles(Week week,BuildContext context) {
+  List<Widget> _buildDayTiles(Week week, BuildContext context) {
     List<Day> days = [week.day1, week.day2, week.day3, week.day4, week.day5, week.day6, week.day7];
-    return days
-        .map(
-          (day) => ListTile(
+    return days.map((day) {
+      return ListTile(
         title: Text(
           day.isRestDay ? 'Rest Day' : 'Workout Day',
           style: TextStyle(color: day.isRestDay ? Colors.red : Colors.green),
@@ -55,9 +60,9 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
           }
         }
             : null,
-      ),
-    )
-        .toList();
+      );
+    }).toList();
   }
 }
+
 

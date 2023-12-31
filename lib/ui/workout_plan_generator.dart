@@ -233,7 +233,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable. Add as many exercises according to workout criteria  "
                   "Example response format:\n"
                   "{\n"
-                  "  'name': 'Workout Name',\n"
+                  "  'name': 'Workout Name(like Chest and triceps or Lower body)',\n"
                   "  'exercises': [\n"
                   "    { 'name': 'ExerciseNameFromList', 'index': 1, 'numberOfSets': 3, 'exerciseSet': { 'exerciseSetType': 'StraightSet', 'restDurationInSeconds': 90, 'reps': 10 } },\n"
                   "    { 'name': 'AnotherExerciseNameFromList', 'index': 2, 'numberOfSets': 2, 'exerciseSet': { 'exerciseSetType': 'SuperSet', 'restDurationInSeconds': 60, 'firstExercise': {...}, 'secondExercise': {...} } }\n"
@@ -254,7 +254,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      temperature: 0.3,
+      temperature: 0.6,
       n: 1,
       messages: [
         systemMessageRequest,

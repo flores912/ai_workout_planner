@@ -204,7 +204,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         role: OpenAIChatMessageRole.system,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "Given the weekly workout plan:${week.toJson()}You are a Fitness Expert. Based on user preferences, limitations, and the context of the current week's workout schedule, generate a workout plan for day:$dayNumber. Use this list to pick exercises from database:$EXERCISE_NAMES_LIST. Use exact names as they are spelled here from this list. Format your response as a JSON object that matches the structure of 'StraightSet' and 'SuperSet' classes. Example of the expected JSON response for a day's workout:\n"
+              "Given the weekly workout plan:${week.toJson()}You are a Fitness Expert. Based on user preferences, limitations, and the context of the current week's workout schedule, generate a workout plan for day:$dayNumber. Use this list to pick exercises from database:$EXERCISE_NAMES_LIST. Use exact names as they are spelled here from this list to name exercise. Format your response as a JSON object that matches the structure of 'StraightSet' and 'SuperSet' classes. Example of the expected JSON response for a day's workout:\n"
                   "{\n"
                   "  'name': 'Strength Training',\n"
                   "  'exercises': [\n"

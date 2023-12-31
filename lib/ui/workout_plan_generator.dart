@@ -145,8 +145,10 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
             "You are a Fitness Expert. Based on the user preferences and limitations provided, create a weekly workout plan based on workout criteria provided by user.  Format your response as a JSON object that matches the structure of a 'Week' class. Example of the expected JSON response:\n"
                 "{\n"
-                "  'day1': { 'isRestDay': false},\n"
-                "  'day2': {'isRestDay': true},\n"
+                "  'day1': { 'isRestDay': false "
+                "            'workoutSplit': Upper},\n"
+                "  'day2': {'isRestDay': true"
+                "           'workoutSplit': rest},\n"
                 "  ... (and so on for each day of the week)\n"
                 "}\n"
                 "Respond in this format.")]
@@ -164,7 +166,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      temperature: 0.1,
+      temperature: 0.5,
       n: 1,
       messages: [
         systemMessageRequest,
@@ -252,7 +254,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      temperature: 0.3,
+      temperature: 0.5,
       n: 1,
       messages: [
         systemMessageRequest,

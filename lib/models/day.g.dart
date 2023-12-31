@@ -11,9 +11,11 @@ Day _$DayFromJson(Map<String, dynamic> json) => Day(
           ? null
           : Workout.fromJson(json['workout'] as Map<String, dynamic>),
       isRestDay: json['isRestDay'] as bool,
+      workoutSplit: json['workoutSplit'] as String,
     );
 
 Map<String, dynamic> _$DayToJson(Day instance) => <String, dynamic>{
       'workout': instance.workout,
       'isRestDay': instance.isRestDay,
+      'workoutSplit': instance.workoutSplit,
     };

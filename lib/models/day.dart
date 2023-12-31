@@ -6,7 +6,9 @@ class Day{
   Workout? workout;
  final bool isRestDay;
 
-  Day({this.workout, required this.isRestDay});
+ final String workoutSplit;
+
+  Day( {this.workout, required this.isRestDay,required this.workoutSplit,});
 
 
  factory Day.fromJson(Map<String, dynamic> json) => _$DayFromJson(json);

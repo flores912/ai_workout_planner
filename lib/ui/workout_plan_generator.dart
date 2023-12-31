@@ -73,9 +73,9 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
               "You are a Fitness Expert. Based on the user's workout criteria, limitations, and preferences, create a comprehensive workout plan. Format your response as a JSON object that matches the structure of the 'WorkoutPlan' class, with an emphasis on the plan's name, description, and number of weeks. Example of the expected JSON response for a workout plan:\n"
                   "{\n"
-                  "  'name': '4-Week Intensive Strength Training',\n"
-                  "  'description': 'A plan designed to increase muscle strength and endurance through focused resistance training.',\n"
-                  "  'numberOfWeeks': 4\n"
+                  "  'name': '(Workout Plan Name)',\n"
+                  "  'description': '(description)',\n"
+                  "  'numberOfWeeks': (number of weeks user wants)\n"
                   "}\n"
                   "Respond in this format."
           )
@@ -86,7 +86,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [
-          OpenAIChatCompletionChoiceMessageContentItemModel.text(workoutCriteria)
+          OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan:$workoutCriteria')
         ]
     );
 
@@ -159,7 +159,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel userMessageRequest =
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
-        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(workoutCriteria)]
+        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan:$workoutCriteria')]
     );
 
 
@@ -219,14 +219,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         role: OpenAIChatMessageRole.system,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "Given the weekly workout plan with the following day schedules:\n"
-                  "Day 1: $day1Json\n"
-                  "Day 2: $day2Json\n"
-                  "Day 3: $day3Json\n"
-                  "Day 4: $day4Json\n"
-                  "Day 5: $day5Json\n"
-                  "Day 6: $day6Json\n"
-                  "Day 7: $day7Json\n"
+
                   "You are a Fitness Expert. Generate a workout plan for day:$dayNumber of the week. "
                   "Use ONLY the following exercise names: $selectedExercises. "
                   "Respond with exercises exactly as they are named in the list. "
@@ -246,7 +239,15 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [
-          OpenAIChatCompletionChoiceMessageContentItemModel.text(workoutCriteria)
+          OpenAIChatCompletionChoiceMessageContentItemModel.text("Given the weekly workout plan with the following day schedules:\n"
+    "Day 1: $day1Json\n"
+    "Day 2: $day2Json\n"
+    "Day 3: $day3Json\n"
+    "Day 4: $day4Json\n"
+    "Day 5: $day5Json\n"
+    "Day 6: $day6Json\n"
+    "Day 7: $day7Json\n"
+   " Here is my criteria to build workout plan:$workoutCriteria")
         ]
     );
 
@@ -394,7 +395,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     // User message request
     OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
-        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(workoutCriteria)]
+        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan:$workoutCriteria')]
     );
 
     // OpenAI Chat API call

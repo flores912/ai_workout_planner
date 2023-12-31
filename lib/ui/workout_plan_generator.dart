@@ -259,6 +259,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         userMessageRequest,
       ],
     );
+    print('prompt:$systemMessageRequest');
 
     late Workout workoutOfDay;
     final message = chat.choices.first.message;
@@ -278,7 +279,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
         Exercise exercise = exercises.firstWhere(
               (e) => e.name.toLowerCase() == exerciseName.toLowerCase(),
-          orElse: () => throw Exception('Exercise not found'),
+          orElse: () => throw Exception('Exercise not found:$exerciseName'),
         );
 
         ExerciseSet exerciseSet;

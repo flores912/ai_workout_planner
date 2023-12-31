@@ -149,7 +149,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                 "            'workoutSplit': Upper},\n"
                 "  'day2': {'isRestDay': true"
                 "           'workoutSplit': rest},\n"
-                "  ... (and so on for each day of the week)\n"
+                "  ... (and so on for each day of the week(remember user's criteria on number of workout per week!))\n"
                 "}\n"
                 "Respond in this format.")]
     );

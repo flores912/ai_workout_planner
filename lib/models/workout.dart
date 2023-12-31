@@ -8,8 +8,12 @@ part 'workout.g.dart';
 class Workout{
 final String name;
 
-final List<Exercise>exercises;
+List<Exercise>exercises = [];
 
   Workout({required this.name, required this.exercises});
 
+
+factory Workout.fromJson(Map<String, dynamic> json) => _$WorkoutFromJson(json);
+Map<String, dynamic> toJson() => _$WorkoutToJson(this);
 }
+

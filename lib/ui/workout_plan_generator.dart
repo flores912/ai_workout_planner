@@ -407,16 +407,16 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       ],
     );
 
-    // Process the response
     final message = chat.choices.first.message;
     List<String> selectedExercises = [];
 
     if (message.content!.first.text != null) {
       String text = message.content!.first.text!;
-      List<dynamic> jsonResponse = jsonDecode(text);
+      Map<String, dynamic> jsonResponse = jsonDecode(text);
+      List<dynamic> exercisesList = jsonResponse['selectedExercises'];
 
       // Add selected exercises to the list
-      jsonResponse.forEach((exerciseName) {
+      exercisesList.forEach((exerciseName) {
         selectedExercises.add(exerciseName.toString());
       });
     } else {

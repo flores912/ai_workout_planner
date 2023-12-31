@@ -227,7 +227,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "You are a Fitness Expert. Generate a workout plan for day:$dayNumber of the week. "
                   "Use ONLY the following exercise names: $selectedExercises. "
                   "Respond with exercises exactly as they are named in the list. "
-                  "Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable. "
+                  "Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable. Add as many exercises according to workout criteria  "
                   "Example response format:\n"
                   "{\n"
                   "  'name': 'Workout Name',\n"

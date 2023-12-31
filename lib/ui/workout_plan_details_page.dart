@@ -1,9 +1,9 @@
+import 'package:ai_workout_planner/ui/workout_detail_page.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import '../models/day.dart';
 import '../models/week.dart';
 import '../models/workout_plan.dart';
-import 'workout_detail_page.dart';
 
 class WorkoutPlanDetailsPage extends StatelessWidget {
   final WorkoutPlan workoutPlan;
@@ -12,73 +12,52 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Day> days = [
-      workoutPlan.weekSchedule.day1,
-      workoutPlan.weekSchedule.day2,
-      workoutPlan.weekSchedule.day3,
-      workoutPlan.weekSchedule.day4,
-      workoutPlan.weekSchedule.day5,
-      workoutPlan.weekSchedule.day6,
-      workoutPlan.weekSchedule.day7
-    ];
+    // Create a list of weeks based on the numberOfWeeks
+    List<Week> weeks = List.generate(workoutPlan.numberOfWeeks, (_) => workoutPlan.weekSchedule);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(workoutPlan.name),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Description: ${workoutPlan.description}',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ),
-          Divider(),
-          ListTile(
-            title: Text('Week ${workoutPlan.weekSchedule.weekNumber ?? ''}'),
-            subtitle: Text('Click on a day to see the workout details.'),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: days.length,
-              itemBuilder: (context, index) {
-                Day day = days[index];
-                return ListTile(
-                  title: Text(
-                    day.isRestDay ? 'Rest Day' : 'Workout Day',
-                    style: TextStyle(color: day.isRestDay ? Colors.red : Colors.green),
-                  ),
-                  subtitle: day.workout != null ? Text(day.workout!.name) : null,
-                  onTap: () {
-                    print('onTap');
-                    if (!day.isRestDay && day.workout != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WorkoutDetailPage(workout: day.workout!),
-                        ),
-                      );
-                    } else {
-                      Fluttertoast.showToast(
-                          msg: day.isRestDay ? "It's a rest day!" : "No workout available",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.grey[600],
-                          textColor: Colors.white,
-                          fontSize: 16.0
-                      );
-                    }
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+      body: PageView.builder(
+        itemCount: weeks.length,
+        itemBuilder: (context, weekIndex) {
+          Week week = weeks[weekIndex];
+          return _buildWeekView(week, context, weekIndex + 1);
+        },
       ),
     );
   }
+
+  Widget _buildWeekView(Week week, BuildContext context, int weekNumber) {
+    List<Day> days = [week.day1, week.day2, week.day3, week.day4, week.day5, week.day6, week.day7];
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('Week $weekNumber'),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: days.length,
+            itemBuilder: (context, index) {
+              Day day = days[index];
+              return ListTile(
+                title: Text(day.isRestDay ? 'Rest Day' : 'Workout Day'),
+                subtitle: day.workout != null ? Text(day.workout!.name) : null,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WorkoutDetailPage(workout: day.workout!),
+                    ),
+                  );                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 }
-
-

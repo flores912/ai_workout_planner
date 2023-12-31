@@ -51,7 +51,15 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
         ),
         subtitle: day.workout != null ? Text(day.workout!.name) : null,
         onTap: () {
-          if (day.isRestDay) {
+          Fluttertoast.showToast(
+              msg: "ON TAP",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.grey[600],
+              textColor: Colors.white,
+              fontSize: 16.0
+          );          if (day.isRestDay) {
             Fluttertoast.showToast(
                 msg: "It's a rest day!",
                 toastLength: Toast.LENGTH_SHORT,

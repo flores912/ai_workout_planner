@@ -350,7 +350,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     required Week week,
   }) async {
     if (!week.day1.isRestDay) {
-    week.day1.workout=  await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 1);
+    week.day1.workout =  await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 1);
     }
     if (!week.day2.isRestDay) {
       week.day2.workout= await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 2);

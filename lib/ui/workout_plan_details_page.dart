@@ -51,7 +51,6 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
         onTap: !day.isRestDay
             ? () {
           if (day.workout != null) {
-            print('workout:${day.workout!.name}');
             Navigator.push(
               context,
               MaterialPageRoute(

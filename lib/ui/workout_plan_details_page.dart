@@ -52,6 +52,7 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
                   ),
                   subtitle: day.workout != null ? Text(day.workout!.name) : null,
                   onTap: () {
+                    print('onTap');
                     if (!day.isRestDay && day.workout != null) {
                       Navigator.push(
                         context,

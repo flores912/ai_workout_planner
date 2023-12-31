@@ -230,7 +230,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "Day 6: $day6Json\n"
                   "Day 7: $day7Json\n"
               "Exercise List To Choose From:$selectedExercises"
-                  "The user's workout criteria are '$workoutCriteria'. Use exercises from the selected list(add them exactly as its spelled) and tailor them to fit the day's specific workout focus and ensure a logical progression throughout the week. Avoid overworking the same muscle groups on consecutive days. Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable. Example response format:\n"
+                  "The user's workout criteria are '$workoutCriteria'. Use exercises from the selected list(add them exactly as its spelled) and tailor them to fit the day's specific workout focus and ensure a logical progression throughout the week. Avoid overworking the same muscle groups on consecutive days. Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable(only those types are available). Example response format:\n"
                   "{\n"
                   "  'name': 'Chest and Triceps Workout',\n"
                   "  'exercises': [\n"

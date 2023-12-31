@@ -258,7 +258,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         userMessageRequest,
       ],
     );
-    print('prompt:$systemMessageRequest');
 
     late Workout workoutOfDay;
     final message = chat.choices.first.message;
@@ -324,6 +323,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         name: jsonResponse['name'],
         exercises: exercisesForWorkout,
       );
+
     } else {
       print('No response or invalid format received from OpenAI.');
     }
@@ -350,25 +350,25 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     required Week week,
   }) async {
     if (!week.day1.isRestDay) {
-      await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 1);
+    week.day1.workout=  await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 1);
     }
     if (!week.day2.isRestDay) {
-      await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 2);
+      week.day2.workout= await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 2);
     }
     if (!week.day3.isRestDay) {
-      await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 3);
+      week.day3.workout= await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 3);
     }
     if (!week.day4.isRestDay) {
-      await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 4);
+      week.day4.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 4);
     }
     if (!week.day5.isRestDay) {
-      await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 5);
+      week.day5.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 5);
     }
     if (!week.day6.isRestDay) {
-      await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 6);
+      week.day6.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 6);
     }
     if (!week.day7.isRestDay) {
-      await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 7);
+      week.day7.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 7);
     }
   }
   Future<List<String>> selectExercisesForWorkoutPlan({required String workoutCriteria}) async {

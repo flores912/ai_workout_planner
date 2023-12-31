@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'day.g.dart';
 @JsonSerializable()
 class Day{
- final Workout? workout;
+  Workout? workout;
  final bool isRestDay;
 
   Day({this.workout, required this.isRestDay});

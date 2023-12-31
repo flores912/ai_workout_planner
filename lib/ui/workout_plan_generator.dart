@@ -208,19 +208,22 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     String day5Json = jsonEncode(week.day5.toJson());
     String day6Json = jsonEncode(week.day6.toJson());
     String day7Json = jsonEncode(week.day7.toJson());
+
     // System message request
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [
-          OpenAIChatCompletionChoiceMessageContentItemModel.text("Given the weekly workout plan with the following day schedules:\n"
-          "Day 1: $day1Json\n"
-          "Day 2: $day2Json\n"
-          "Day 3: $day3Json\n"
-          "Day 4: $day4Json\n"
-          "Day 5: $day5Json\n"
-          "Day 6: $day6Json\n"
-          "Day 7: $day7Json\n"
-          "You are a Fitness Expert. Based on user preferences, limitations, and the context of the current week's workout schedule, generate a workout plan for day:$dayNumber. Use this list to pick exercises from database:$EXERCISE_NAMES_LIST. Use exact names as they are spelled here from this list to name exercise. Format your response as a JSON object that matches the structure of 'StraightSet' and 'SuperSet' classes. Example of the expected JSON response for a day's workout:\n"
+          OpenAIChatCompletionChoiceMessageContentItemModel.text(
+            // Including the JSON for each day in the prompt
+              "Given the weekly workout plan with the following day schedules:\n"
+                  "Day 1: $day1Json\n"
+                  "Day 2: $day2Json\n"
+                  "Day 3: $day3Json\n"
+                  "Day 4: $day4Json\n"
+                  "Day 5: $day5Json\n"
+                  "Day 6: $day6Json\n"
+                  "Day 7: $day7Json\n"
+                  "You are a Fitness Expert. Based on user preferences, limitations, and the context of the current week's workout schedule, generate a workout plan for day:$dayNumber. Use this list to pick exercises from database:$EXERCISE_NAMES_LIST. Use exact names as they are spelled here from this list to name exercise, including capitalization. Format your response as a JSON object that matches the structure of 'StraightSet' and 'SuperSet' classes. Example of the expected JSON response for a day's workout:\n"
                   "{\n"
                   "  'name': 'Strength Training',\n"
                   "  'exercises': [\n"
@@ -288,12 +291,11 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       List<Exercise> exercisesForWorkout = [];
 
       for (var detail in workoutDetails) {
-        String exerciseName = detail['name'].toString().toLowerCase();  // Normalize the name to lowercase
+        String exerciseName = detail['name'].toString().toLowerCase();
         int index = detail['index'];
         int numberOfSets = detail['numberOfSets'];
         var exerciseSetDetails = detail['exerciseSet'];
 
-        // Check if the normalized name exists in your exercise list
         Exercise? foundExercise = findExerciseByName(exerciseName);
 
         if (foundExercise == null) {
@@ -348,6 +350,9 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
     return workoutOfDay;
   }
+
+
+
 
 // Helper function to find an exercise by name
   Exercise? findExerciseByName(String exerciseName) {

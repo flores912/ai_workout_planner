@@ -159,7 +159,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel userMessageRequest =
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
-        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan:$workoutCriteria')]
+        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan(Follow number of workouts per week):$workoutCriteria')]
     );
 
 

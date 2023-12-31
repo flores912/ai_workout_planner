@@ -143,13 +143,13 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "You are a Fitness Expert. Based on the user preferences and limitations provided, create a weekly workout plan based on workout criteria provided by user (Follow number of workouts per week by user's criteria). Make sure you keep in mind rest time between each day(don't have intensive days next to each other working out same muscles). Format your response as a JSON object that matches the structure of a 'Week' class. Example of the expected JSON response:\n"
+            "You are a Fitness Expert. Based on the user preferences and limitations provided, create a weekly workout plan based on workout criteria provided by user. Make sure you keep in mind rest time between each day(don't have intensive days next to each other working out same muscles). Format your response as a JSON object that matches the structure of a 'Week' class. Example of the expected JSON response:\n"
                 "{\n"
                 "  'day1': { 'isRestDay': false "
                 "            'workoutSplit': Upper},\n"
                 "  'day2': {'isRestDay': true"
                 "           'workoutSplit': rest},\n"
-                "  ... (and so on for each day of the week(remember user's criteria on number of workout per week!))\n"
+                "  ... (and so on for each day of the week)\n"
                 "}\n"
                 "Respond in this format.")]
     );
@@ -159,14 +159,14 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel userMessageRequest =
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
-        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan(Follow number of workouts per week):$workoutCriteria')]
+        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan:$workoutCriteria')]
     );
 
 
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      temperature: 0.2,
+      temperature: 0.3,
       n: 1,
       messages: [
         systemMessageRequest,
@@ -219,7 +219,14 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         role: OpenAIChatMessageRole.system,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-
+              "Given the weekly workout plan with the following day schedules:\n"
+                  "Day 1: $day1Json\n"
+                  "Day 2: $day2Json\n"
+                  "Day 3: $day3Json\n"
+                  "Day 4: $day4Json\n"
+                  "Day 5: $day5Json\n"
+                  "Day 6: $day6Json\n"
+                  "Day 7: $day7Json\n"
                   "You are a Fitness Expert. Generate a workout plan for day:$dayNumber of the week. "
                   "Use ONLY the following exercise names: $selectedExercises. "
                   "Respond with exercises exactly as they are named in the list. "
@@ -239,15 +246,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [
-          OpenAIChatCompletionChoiceMessageContentItemModel.text("Given the weekly workout plan with the following day schedules:\n"
-    "Day 1: $day1Json\n"
-    "Day 2: $day2Json\n"
-    "Day 3: $day3Json\n"
-    "Day 4: $day4Json\n"
-    "Day 5: $day5Json\n"
-    "Day 6: $day6Json\n"
-    "Day 7: $day7Json\n"
-   " Here is my criteria to build workout plan:$workoutCriteria")
+          OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan:$workoutCriteria')
         ]
     );
 
@@ -395,7 +394,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     // User message request
     OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
-        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan:$workoutCriteria')]
+        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(workoutCriteria)]
     );
 
     // OpenAI Chat API call

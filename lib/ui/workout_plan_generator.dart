@@ -25,6 +25,8 @@ class WorkoutPlanGenerator extends StatefulWidget {
 
 class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
+  late List<String>selectedExercises;
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +63,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
 
   Future<WorkoutPlan> generateWorkoutPlan({required String workoutCriteria}) async {
+
+    selectedExercises = await selectExercisesForWorkoutPlan(workoutCriteria: workoutCriteria);
     // System message request for generating a workout plan
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
@@ -214,7 +218,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
               "You are a Fitness Expert. Generate a workout plan for day:$dayNumber of the week. "
-                  "Use ONLY the following exercise names: $EXERCISE_NAMES_LIST. "
+                  "Use ONLY the following exercise names: $selectedExercises. "
                   "Respond with exercises exactly as they are named in the list. "
                   "Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable. "
                   "Example response format:\n"
@@ -360,6 +364,57 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     if (!week.day7.isRestDay) {
       await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 7);
     }
+  }
+  Future<List<String>> selectExercisesForWorkoutPlan({required String workoutCriteria,}) async {
+    // Construct the system prompt
+    OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
+        role: OpenAIChatMessageRole.system,
+        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
+            "You are a Fitness Expert. Based on the workout criteria: '$workoutCriteria', select approximately 100 exercises from the following list:\n$EXERCISE_NAMES_LIST\nFormat your response as a JSON array of selected exercise names. Example of the expected JSON response:\n"
+                "[\n"
+                "  'Exercise 1',\n"
+                "  'Exercise 2',\n"
+                "  ... (more exercises)\n"
+                "]\n"
+                "Respond in this format.")]
+    );
+
+    // User message request
+    OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
+        role: OpenAIChatMessageRole.user,
+        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(workoutCriteria)]
+    );
+
+    // OpenAI Chat API call
+    final chat = await OpenAI.instance.chat.create(
+      responseFormat: {"type": "json_array"},
+      model: "gpt-3.5-turbo-1106",
+      maxTokens: 1000,
+      temperature: 0.5,
+      n: 1,
+      messages: [
+        systemMessageRequest,
+        userMessageRequest,
+      ],
+    );
+
+    // Process the response
+    final message = chat.choices.first.message;
+    List<String> selectedExercises = [];
+
+    if (message.content!.first.text != null) {
+      String text = message.content!.first.text!;
+      List<dynamic> jsonResponse = jsonDecode(text);
+
+      // Add selected exercises to the list
+      jsonResponse.forEach((exerciseName) {
+        selectedExercises.add(exerciseName.toString());
+      });
+    } else {
+      print('No response or invalid format received from OpenAI.');
+    }
+
+    return selectedExercises;
   }
 
 }

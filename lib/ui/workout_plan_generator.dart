@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ai_workout_planner/consts/all_exercise_names.dart';
+import 'package:ai_workout_planner/consts/exercises.dart';
 import 'package:ai_workout_planner/models/exercise.dart';
 import 'package:ai_workout_planner/models/workout.dart';
 import 'package:ai_workout_planner/models/workout_plan.dart';
@@ -199,12 +200,27 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     required Week week,
     required int dayNumber
   }) async {
+    // Convert each day of the week to JSON
+    String day1Json = jsonEncode(week.day1.toJson());
+    String day2Json = jsonEncode(week.day2.toJson());
+    String day3Json = jsonEncode(week.day3.toJson());
+    String day4Json = jsonEncode(week.day4.toJson());
+    String day5Json = jsonEncode(week.day5.toJson());
+    String day6Json = jsonEncode(week.day6.toJson());
+    String day7Json = jsonEncode(week.day7.toJson());
     // System message request
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [
-          OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "Given the weekly workout plan:${week.toJson()}You are a Fitness Expert. Based on user preferences, limitations, and the context of the current week's workout schedule, generate a workout plan for day:$dayNumber. Use this list to pick exercises from database:$EXERCISE_NAMES_LIST. Use exact names as they are spelled here from this list to name exercise. Format your response as a JSON object that matches the structure of 'StraightSet' and 'SuperSet' classes. Example of the expected JSON response for a day's workout:\n"
+          OpenAIChatCompletionChoiceMessageContentItemModel.text("Given the weekly workout plan with the following day schedules:\n"
+          "Day 1: $day1Json\n"
+          "Day 2: $day2Json\n"
+          "Day 3: $day3Json\n"
+          "Day 4: $day4Json\n"
+          "Day 5: $day5Json\n"
+          "Day 6: $day6Json\n"
+          "Day 7: $day7Json\n"
+          "You are a Fitness Expert. Based on user preferences, limitations, and the context of the current week's workout schedule, generate a workout plan for day:$dayNumber. Use this list to pick exercises from database:$EXERCISE_NAMES_LIST. Use exact names as they are spelled here from this list to name exercise. Format your response as a JSON object that matches the structure of 'StraightSet' and 'SuperSet' classes. Example of the expected JSON response for a day's workout:\n"
                   "{\n"
                   "  'name': 'Strength Training',\n"
                   "  'exercises': [\n"
@@ -264,13 +280,12 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     late Workout workoutOfDay;
     final message = chat.choices.first.message;
 
-
     if (message.content!.first.text != null) {
       String text = message.content!.first.text!;
       Map<String, dynamic> jsonResponse = jsonDecode(text);
 
       var workoutDetails = jsonResponse['exercises'] as List<dynamic>;
-      List<Exercise> exercises = [];
+      List<Exercise> exercisesForWorkout = [];
 
       for (var detail in workoutDetails) {
         String exerciseName = detail['name'].toString().toLowerCase();  // Normalize the name to lowercase
@@ -279,10 +294,12 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         var exerciseSetDetails = detail['exerciseSet'];
 
         // Check if the normalized name exists in your exercise list
-        Exercise exercise = exercises.firstWhere(
-              (e) => e.name.toLowerCase() == exerciseName,
-          orElse: () => throw Exception('Exercise not found: $exerciseName'),
-        );
+        Exercise? foundExercise = findExerciseByName(exerciseName);
+
+        if (foundExercise == null) {
+          print('Exercise not found: $exerciseName');
+          continue;
+        }
 
         ExerciseSet exerciseSet;
         if (exerciseSetDetails['exerciseSetType'] == 'StraightSet') {
@@ -295,15 +312,13 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
           var firstExerciseDetails = exerciseSetDetails['firstExercise'];
           var secondExerciseDetails = exerciseSetDetails['secondExercise'];
 
-          Exercise firstExercise = exercises.firstWhere(
-                (e) => e.name.toLowerCase() == firstExerciseDetails['name'].toLowerCase(),
-            orElse: () => throw Exception('First exercise not found'),
-          );
+          Exercise? firstExercise = findExerciseByName(firstExerciseDetails['name'].toLowerCase());
+          Exercise? secondExercise = findExerciseByName(secondExerciseDetails['name'].toLowerCase());
 
-          Exercise secondExercise = exercises.firstWhere(
-                (e) => e.name.toLowerCase() == secondExerciseDetails['name'].toLowerCase(),
-            orElse: () => throw Exception('Second exercise not found'),
-          );
+          if (firstExercise == null || secondExercise == null) {
+            print('One or both exercises in SuperSet not found');
+            continue;
+          }
 
           exerciseSet = SuperSet(
             restDurationInSeconds: exerciseSetDetails['restDurationInSeconds'],
@@ -317,15 +332,15 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
           throw Exception('Invalid exercise set type');
         }
 
-        exercise.index = index;
-        exercise.exerciseSet = exerciseSet;
-        exercise.numberOfSets = numberOfSets;
-        exercises.add(exercise);
+        foundExercise.index = index;
+        foundExercise.exerciseSet = exerciseSet;
+        foundExercise.numberOfSets = numberOfSets;
+        exercisesForWorkout.add(foundExercise);
       }
 
       workoutOfDay = Workout(
         name: jsonResponse['name'],
-        exercises: exercises,
+        exercises: exercisesForWorkout,
       );
     } else {
       print('No response or invalid format received from OpenAI.');
@@ -333,6 +348,18 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
     return workoutOfDay;
   }
+
+// Helper function to find an exercise by name
+  Exercise? findExerciseByName(String exerciseName) {
+    // Assuming you have a global or accessible list of exercises
+    for (var exercise in AllExercises().list) {
+      if (exercise.name.toLowerCase() == exerciseName) {
+        return exercise;
+      }
+    }
+    return null;
+  }
+
   Future<void> generateWorkoutsForWeek({
     required String workoutCriteria,
     required Week week,

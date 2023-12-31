@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../models/day.dart';
 import '../models/week.dart';
 import '../models/workout_plan.dart';
@@ -39,6 +40,7 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
     );
   }
 
+
   List<Widget> _buildDayTiles(Week week, BuildContext context) {
     List<Day> days = [week.day1, week.day2, week.day3, week.day4, week.day5, week.day6, week.day7];
     return days.map((day) {
@@ -48,21 +50,41 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
           style: TextStyle(color: day.isRestDay ? Colors.red : Colors.green),
         ),
         subtitle: day.workout != null ? Text(day.workout!.name) : null,
-        onTap: !day.isRestDay
-            ? () {
-          if (day.workout != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => WorkoutDetailPage(workout: day.workout!),
-              ),
+        onTap: () {
+          if (day.isRestDay) {
+            Fluttertoast.showToast(
+                msg: "It's a rest day!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.grey[600],
+                textColor: Colors.white,
+                fontSize: 16.0
             );
+          } else {
+            if (day.workout != null) {
+              Fluttertoast.showToast(
+                  msg: "Opening Workout: ${day.workout!.name}",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.grey[600],
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WorkoutDetailPage(workout: day.workout!),
+                ),
+              );
+            }
           }
-        }
-            : null,
+        },
       );
     }).toList();
   }
+
 }
 
 

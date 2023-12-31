@@ -13,6 +13,7 @@ dependencies:
   expansion_tile_card: ^3.0.0
   flutter:
     sdk: flutter
+  fluttertoast: ^8.2.4
   json_annotation: ^4.8.1
 
 dev_dependencies:

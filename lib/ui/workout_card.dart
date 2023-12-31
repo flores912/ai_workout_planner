@@ -1,19 +1,28 @@
-import 'package:expansion_tile_card/expansion_tile_card.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:ai_workout_planner/ui/workout_detail_page.dart';
+import 'package:flutter/material.dart';
 
-import '../models/workout_plan.dart';
+import '../models/workout.dart';
 
-class WorkoutPlanCard extends StatelessWidget {
+class WorkoutCard extends StatelessWidget {
+  final Workout workout;
 
-  final WorkoutPlan workoutPlan ;
-  const WorkoutPlanCard({super.key, required this.workoutPlan});
+  const WorkoutCard({super.key, required this.workout});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ExpansionTileCard(title: Text(workoutPlan.name),subtitle: Text(workoutPlan.description),),
-      ],
+    return Card(
+      child: ListTile(
+        title: Text(workout.name),
+        subtitle: Text('Exercises: ${workout.exercises.length}'),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WorkoutDetailPage(workout: workout,),
+            ),
+          );
+        },
+      ),
     );
   }
 }

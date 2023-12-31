@@ -4,13 +4,13 @@ import 'package:ai_workout_planner/consts/all_exercise_names.dart';
 import 'package:ai_workout_planner/consts/exercises.dart';
 import 'package:ai_workout_planner/models/exercise.dart';
 import 'package:ai_workout_planner/models/workout.dart';
-import 'package:ai_workout_planner/models/workout_plan.dart';
-import 'package:ai_workout_planner/ui/workout_card.dart';
+import 'package:ai_workout_planner/ui/workout_plan_card.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 
 import '../models/exercise_set.dart';
 import '../models/week.dart';
+import '../models/workout_plan.dart';
 
 class WorkoutPlanGenerator extends StatefulWidget {
   final String workoutCriteria;

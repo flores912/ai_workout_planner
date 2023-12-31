@@ -9,6 +9,8 @@ class WorkoutPlan{
  final int numberOfWeeks;
  final  Week weekSchedule;
 
+
+
   WorkoutPlan({required this.name, required this.numberOfWeeks, required this.weekSchedule,required this.description});
 
 

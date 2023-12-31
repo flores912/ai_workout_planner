@@ -371,13 +371,15 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 7);
     }
   }
-  Future<List<String>> selectExercisesForWorkoutPlan({required String workoutCriteria,}) async {
-    print('selecting exercises for plan');
+  Future<List<String>> selectExercisesForWorkoutPlan({required String workoutCriteria}) async {
+    print('Selecting exercises for plan');
+
     // Construct the system prompt
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "You are a Fitness Expert. Based on the workout criteria: '$workoutCriteria', select approximately 100 exercises from the following list and in the same spelling,grammar, and capitalization:\n$EXERCISE_NAMES_LIST\nFormat your response as a JSON array of selected exercise names. Example of the expected JSON response:\n"
+            "You are a Fitness Expert. Based on the workout criteria: '$workoutCriteria', select approximately 20 exercises from the following list. Use the exact spelling, grammar, and capitalization as in the list:\n$EXERCISE_NAMES_LIST\n"
+                "Format your response as a JSON array of selected exercise names. Example of the expected JSON response:\n"
                 "[\n"
                 "  'Exercise 1',\n"
                 "  'Exercise 2',\n"
@@ -394,8 +396,10 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
     // OpenAI Chat API call
     final chat = await OpenAI.instance.chat.create(
-      responseFormat: {"type": "json_array"},
+      responseFormat: {"type": "json_object"}, // Use json_object as the response format
       model: "gpt-3.5-turbo-1106",
+      maxTokens: 1000,
+      temperature: 0.5,
       n: 1,
       messages: [
         systemMessageRequest,

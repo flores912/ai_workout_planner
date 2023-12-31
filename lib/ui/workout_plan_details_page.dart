@@ -51,6 +51,8 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
         ),
         subtitle: day.workout != null ? Text(day.workout!.name) : null,
         onTap: () {
+            print("Tapped on ${day.isRestDay ? 'Rest Day' : 'Workout Day'}");
+
           Fluttertoast.showToast(
               msg: "ON TAP",
               toastLength: Toast.LENGTH_SHORT,

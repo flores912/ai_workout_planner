@@ -212,7 +212,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         role: OpenAIChatMessageRole.system,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            // Including the JSON for each day in the prompt
               "Given the weekly workout plan with the following day schedules:\n"
                   "Day 1: $day1Json\n"
                   "Day 2: $day2Json\n"
@@ -221,10 +220,11 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "Day 5: $day5Json\n"
                   "Day 6: $day6Json\n"
                   "Day 7: $day7Json\n"
-                  "You are a Fitness Expert. Based on user preferences, limitations, and the context of the current week's workout schedule, generate a workout plan for day:$dayNumber. Use this list to pick exercises from database:$EXERCISE_NAMES_LIST. Use exact names as they are spelled here from this list to name exercise, including capitalization. Format your response as a JSON object that matches the structure of 'StraightSet' and 'SuperSet' classes. Example of the expected JSON response for a day's workout:\n"
+                  "You are a Fitness Expert. Based on user preferences, limitations, and the context of the current week's workout schedule, generate a workout plan for day:$dayNumber. Use this list to pick exercises from database:$EXERCISE_NAMES_LIST. Use exact names as they are spelled here from this list to name exercise, including capitalization. Format your response as a JSON object. Note that while 'StraightSet' and 'SuperSet' are the set types to be used, not every workout needs to include both types. You can use either type or a combination of both as needed. Example of the expected JSON response for a day's workout:\n"
                   "{\n"
                   "  'name': 'Strength Training',\n"
                   "  'exercises': [\n"
+                  "    // Example with a StraightSet\n"
                   "    {\n"
                   "      'name': 'Squat',\n"
                   "      'index': 1,\n"
@@ -235,6 +235,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "         'reps': 12\n"
                   "      }\n"
                   "    },\n"
+                  "    // Example with a SuperSet\n"
                   "    {\n"
                   "      'name': 'Bench Press and Deadlift SuperSet',\n"
                   "      'index': 2,\n"
@@ -248,13 +249,14 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "         'secondExerciseReps': 10\n"
                   "      }\n"
                   "    }\n"
-                  "    ... (more exercises)\n"
+                  "    // More exercises can follow using either set type as appropriate\n"
                   "  ]\n"
                   "}\n"
                   "Respond in this format."
           )
         ]
     );
+
 
     // User message request
     OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(

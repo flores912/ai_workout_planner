@@ -7,6 +7,7 @@ import 'package:ai_workout_planner/models/workout.dart';
 import 'package:ai_workout_planner/ui/workout_plan_card.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
+import 'package:string_similarity/string_similarity.dart';
 
 import '../models/exercise_set.dart';
 import '../models/week.dart';
@@ -275,7 +276,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         int numberOfSets = detail['numberOfSets'];
         var exerciseSetDetails = detail['exerciseSet'];
 
-        Exercise? foundExercise = findExerciseByName(exerciseName);
+        Exercise? foundExercise = findClosestMatchExerciseByName(exerciseName);
 
         if (foundExercise == null) {
           print('Exercise not found: $exerciseName');
@@ -425,5 +426,23 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
     return selectedExercises;
   }
+  Exercise? findClosestMatchExerciseByName(String name) {
+    double highestSimilarity = 0.0;
+    Exercise? closestMatch;
 
+    for (var exercise in AllExercises().list) { // Replace EXERCISE_LIST with your list of exercises
+      double similarity = StringSimilarity.compareTwoStrings(name, exercise.name.toLowerCase());
+      if (similarity > highestSimilarity) {
+        highestSimilarity = similarity;
+        closestMatch = exercise;
+      }
+    }
+
+    // You can adjust the threshold value as needed
+    if (highestSimilarity > 0.6) {
+      return closestMatch;
+    } else {
+      return null;
+    }
+  }
 }

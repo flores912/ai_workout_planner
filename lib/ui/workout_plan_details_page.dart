@@ -12,6 +12,16 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Day> days = [
+      workoutPlan.weekSchedule.day1,
+      workoutPlan.weekSchedule.day2,
+      workoutPlan.weekSchedule.day3,
+      workoutPlan.weekSchedule.day4,
+      workoutPlan.weekSchedule.day5,
+      workoutPlan.weekSchedule.day6,
+      workoutPlan.weekSchedule.day7
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(workoutPlan.name),
@@ -31,70 +41,43 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
             subtitle: Text('Click on a day to see the workout details.'),
           ),
           Expanded(
-            child: ListView(
-              children: _buildDayTiles(workoutPlan.weekSchedule, context),
+            child: ListView.builder(
+              itemCount: days.length,
+              itemBuilder: (context, index) {
+                Day day = days[index];
+                return ListTile(
+                  title: Text(
+                    day.isRestDay ? 'Rest Day' : 'Workout Day',
+                    style: TextStyle(color: day.isRestDay ? Colors.red : Colors.green),
+                  ),
+                  subtitle: day.workout != null ? Text(day.workout!.name) : null,
+                  onTap: () {
+                    if (!day.isRestDay && day.workout != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WorkoutDetailPage(workout: day.workout!),
+                        ),
+                      );
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: day.isRestDay ? "It's a rest day!" : "No workout available",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.grey[600],
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+                    }
+                  },
+                );
+              },
             ),
           ),
         ],
       ),
     );
   }
-
-
-  List<Widget> _buildDayTiles(Week week, BuildContext context) {
-    List<Day> days = [week.day1, week.day2, week.day3, week.day4, week.day5, week.day6, week.day7];
-    return days.map((day) {
-      return ListTile(
-        title: Text(
-          day.isRestDay ? 'Rest Day' : 'Workout Day',
-          style: TextStyle(color: day.isRestDay ? Colors.red : Colors.green),
-        ),
-        subtitle: day.workout != null ? Text(day.workout!.name) : null,
-        onTap: () {
-            print("Tapped on ${day.isRestDay ? 'Rest Day' : 'Workout Day'}");
-
-          Fluttertoast.showToast(
-              msg: "ON TAP",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.grey[600],
-              textColor: Colors.white,
-              fontSize: 16.0
-          );          if (day.isRestDay) {
-            Fluttertoast.showToast(
-                msg: "It's a rest day!",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.grey[600],
-                textColor: Colors.white,
-                fontSize: 16.0
-            );
-          } else {
-            if (day.workout != null) {
-              Fluttertoast.showToast(
-                  msg: "Opening Workout: ${day.workout!.name}",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.grey[600],
-                  textColor: Colors.white,
-                  fontSize: 16.0
-              );
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WorkoutDetailPage(workout: day.workout!),
-                ),
-              );
-            }
-          }
-        },
-      );
-    }).toList();
-  }
-
 }
 
 

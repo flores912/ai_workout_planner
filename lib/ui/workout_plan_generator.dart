@@ -264,6 +264,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     late Workout workoutOfDay;
     final message = chat.choices.first.message;
 
+
     if (message.content!.first.text != null) {
       String text = message.content!.first.text!;
       Map<String, dynamic> jsonResponse = jsonDecode(text);
@@ -272,14 +273,15 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       List<Exercise> exercises = [];
 
       for (var detail in workoutDetails) {
-        String exerciseName = detail['name'];
+        String exerciseName = detail['name'].toString().toLowerCase();  // Normalize the name to lowercase
         int index = detail['index'];
         int numberOfSets = detail['numberOfSets'];
         var exerciseSetDetails = detail['exerciseSet'];
 
+        // Check if the normalized name exists in your exercise list
         Exercise exercise = exercises.firstWhere(
-              (e) => e.name.toLowerCase() == exerciseName.toLowerCase(),
-          orElse: () => throw Exception('Exercise not found:$exerciseName'),
+              (e) => e.name.toLowerCase() == exerciseName,
+          orElse: () => throw Exception('Exercise not found: $exerciseName'),
         );
 
         ExerciseSet exerciseSet;

@@ -89,7 +89,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      maxTokens: 1000,
       temperature: 0.5,
       n: 1,
       messages: [
@@ -160,7 +159,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      maxTokens: 1000,
       temperature: 0.5,
       n: 1,
       messages: [
@@ -270,7 +268,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      maxTokens: 1000,
       temperature: 0.5,
       n: 1,
       messages: [

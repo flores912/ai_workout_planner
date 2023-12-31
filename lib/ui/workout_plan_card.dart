@@ -1,9 +1,8 @@
-import 'package:expansion_tile_card/expansion_tile_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/workout_plan.dart';
 
+import 'package:ai_workout_planner/ui/workout_plan_details_page.dart'; // Import your WorkoutPlanDetailsPage
 
 class WorkoutPlanCard extends StatelessWidget {
   final WorkoutPlan workoutPlan;
@@ -25,36 +24,52 @@ class WorkoutPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Title with background color
-        Container(
-          padding: titlePadding,
-          decoration: BoxDecoration(
-            color: titleBackgroundColor,
-            borderRadius: BorderRadius.circular(8),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WorkoutPlanDetailsPage(workoutPlan: workoutPlan),
           ),
-          child: Text(
-            workoutPlan.name,
-            style: titleTextStyle,
-          ),
-        ),
-        const SizedBox(height: 8), // Spacing between title and card
-        // Expansion Tile Card
-        ExpansionTileCard(
-          leading: leadingIcon,
-          title: Text(workoutPlan.name),
-          subtitle: Text(workoutPlan.description, style: subtitleTextStyle),
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text('Number of Weeks: ${workoutPlan.numberOfWeeks}'),
+        );
+      },
+      child: Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Title with background color
+            Container(
+              padding: titlePadding,
+              decoration: BoxDecoration(
+                color: titleBackgroundColor,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(4),
+                  topRight: Radius.circular(4),
+                ),
+              ),
+              child: Text(
+                workoutPlan.name,
+                style: titleTextStyle,
+              ),
             ),
-            // Additional details of the workout plan can be added here
+            ListTile(
+              leading: leadingIcon,
+              title: Text(workoutPlan.name, style: subtitleTextStyle),
+              subtitle: Text('Weeks: ${workoutPlan.numberOfWeeks}'),
+              isThreeLine: true,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                workoutPlan.description,
+                style: subtitleTextStyle,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 }

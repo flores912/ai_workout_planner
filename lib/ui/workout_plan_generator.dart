@@ -429,35 +429,25 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "As a Fitness Expert, select approximately 20 exercises from the following list. Ensure a balanced selection suitable for a full-body workout, avoiding overuse of similar exercises. Use the exact spelling, grammar, and capitalization from the list:\n$EXERCISE_NAMES_LIST\n"
+            "As a Fitness Expert, select approximately 20 exercises from the following list. Based on criteria $workoutCriteria\n Ensure a balanced selection suitable for a full-body workout, avoiding overuse of similar exercises. Use the exact spelling, grammar, and capitalization from the list:\n$EXERCISE_NAMES_LIST\n"
                 "Format your response as a JSON array of selected exercise names. Example of the expected JSON response:\n"
                 "[\n"
-                "  'Exercise 1 from list',\n"
-                "  'Exercise 2 from list',\n"
+                "  'Exercise 1',\n"
+                "  'Exercise 2',\n"
                 "  ... (more exercises)\n"
                 "]\n"
                 "Respond in this format.")]
     );
 
 
-// User message request with workout criteria
-    OpenAIChatCompletionChoiceMessageModel userMessageRequest =
-    OpenAIChatCompletionChoiceMessageModel(
-        role: OpenAIChatMessageRole.user,
-        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "Here is my criteria to build the workout plan (please follow the specified number of workouts per week): $workoutCriteria"
-        )]
-    );
-
     // OpenAI Chat API call
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"}, // Use json_object as the response format
       model: "gpt-3.5-turbo-1106",
-      temperature: 0.5,
+      temperature: 0.3,
       n: 1,
       messages: [
         systemMessageRequest,
-        userMessageRequest,
       ],
     );
 

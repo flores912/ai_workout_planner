@@ -424,25 +424,26 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
   Future<List<String>> selectExercisesForWorkoutPlan({required String workoutCriteria}) async {
     print('Selecting exercises for plan');
 
-    // Construct the system prompt with a JSON example
-// Construct the system prompt for selecting exercises
+    // Construct the system prompt for selecting exercises
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
-        content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "As a Fitness Expert, select approximately 20 exercises from the following list. Based on criteria $workoutCriteria\n Ensure a balanced selection suitable for a full-body workout, avoiding overuse of similar exercises. Use the exact spelling, grammar, and capitalization from the list:\n$EXERCISE_NAMES_LIST\n"
-                "Format your response as a JSON array of selected exercise names. Example of the expected JSON response:\n"
-                "[\n"
-                "  'Exercise 1',\n"
-                "  'Exercise 2',\n"
-                "  ... (more exercises)\n"
-                "]\n"
-                "Respond in this format.")]
+        content: [
+          OpenAIChatCompletionChoiceMessageContentItemModel.text(
+              "As a Fitness Expert, based on the workout criteria '$workoutCriteria', select approximately 20 exercises from the provided list. Ensure a balanced selection suitable for a full-body workout, avoiding overuse of similar exercises. Use the exact spelling, grammar, and capitalization from the list. Format your response as a JSON object with the key 'selectedExercises' containing an array of exercise names. Example of the expected JSON response:\n"
+                  "{\n"
+                  "  'selectedExercises': [\n"
+                  "    'ExerciseName1',\n"
+                  "    'ExerciseName2',\n"
+                  "    ... (more exercises)\n"
+                  "  ]\n"
+                  "}\n"
+                  "Respond in this format, ensuring to select only from the provided list:$EXERCISE_NAMES_LIST")
+        ]
     );
-
 
     // OpenAI Chat API call
     final chat = await OpenAI.instance.chat.create(
-      responseFormat: {"type": "json_object"}, // Use json_object as the response format
+      responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
       temperature: 0.3,
       n: 1,

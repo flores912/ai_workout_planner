@@ -254,25 +254,14 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     String day7Json = jsonEncode(week.day7.toJson());
 
     // System message request
+    // Construct the system prompt for generating a workout of the day
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "Given the weekly workout plan with the following day schedules:\n"
-                  "Day 1: $day1Json\n"
-                  "Day 2: $day2Json\n"
-                  "Day 3: $day3Json\n"
-                  "Day 4: $day4Json\n"
-                  "Day 5: $day5Json\n"
-                  "Day 6: $day6Json\n"
-                  "Day 7: $day7Json\n"
-                  "You are a Fitness Expert. Generate a workout plan for day:$dayNumber of the week. "
-                  "Use ONLY the following exercise names: $selectedExercises. "
-                  "Respond with exercises exactly as they are named in the list. "
-                  "Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable. Add as many exercises according to workout criteria  "
-                  "Example response format:\n"
+              "As a Fitness Expert, create a detailed workout for day $dayNumber of the user's weekly plan. Use exercises from the selected list and tailor them to fit the day's specific workout focus, like 'Chest and Triceps' or 'Lower Body'. Ensure the workout is balanced and follows a logical progression. Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable. Example response format:\n"
                   "{\n"
-                  "  'name': 'Workout Name(like Chest and triceps or Lower body)',\n"
+                  "  'name': 'Chest and Triceps Workout',\n"
                   "  'exercises': [\n"
                   "    { 'name': 'ExerciseNameFromList', 'index': 1, 'numberOfSets': 3, 'exerciseSet': { 'exerciseSetType': 'StraightSet', 'restDurationInSeconds': 90, 'reps': 10 } },\n"
                   "    { 'name': 'AnotherExerciseNameFromList', 'index': 2, 'numberOfSets': 2, 'exerciseSet': { 'exerciseSetType': 'SuperSet', 'restDurationInSeconds': 60, 'firstExercise': {...}, 'secondExercise': {...} } }\n"
@@ -281,11 +270,20 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
           )
         ]);
 
+
     // User message request
     OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [
-          OpenAIChatCompletionChoiceMessageContentItemModel.text('Here is my criteria to build workout plan:$workoutCriteria')
+          OpenAIChatCompletionChoiceMessageContentItemModel.text("Given the weekly workout plan with the following day schedules:\n"
+          "Day 1: $day1Json\n"
+              "Day 2: $day2Json\n"
+              "Day 3: $day3Json\n"
+              "Day 4: $day4Json\n"
+              "Day 5: $day5Json\n"
+              "Day 6: $day6Json\n"
+              "Day 7: $day7Json\n"
+              'and workout plan criteria:$workoutCriteria')
         ]
     );
 

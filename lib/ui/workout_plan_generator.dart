@@ -404,8 +404,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"}, // Use json_object as the response format
       model: "gpt-3.5-turbo-1106",
-      maxTokens: 1000,
-      temperature: 0.6,
+      temperature: 0.3,
       n: 1,
       messages: [
         systemMessageRequest,

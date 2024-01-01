@@ -474,7 +474,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     double highestSimilarity = 0.0;
     Exercise? closestMatch;
 
-    for (var exercise in AllExercises().list) { // Replace EXERCISE_LIST with your list of exercises
+    for (var exercise in AllExercises().list) {
       double similarity = StringSimilarity.compareTwoStrings(name, exercise.name.toLowerCase());
       if (similarity > highestSimilarity) {
         highestSimilarity = similarity;

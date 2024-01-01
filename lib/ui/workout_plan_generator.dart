@@ -507,7 +507,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     }
 
     // You can adjust the threshold value as needed
-    if (highestSimilarity > 0.6) {
+    if (highestSimilarity > 0.4) {
       return closestMatch;
     } else {
       return null;

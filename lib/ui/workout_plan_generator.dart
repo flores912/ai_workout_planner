@@ -130,7 +130,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      temperature: 0.5,
+      temperature: 0.3,
       n: 1,
       messages: [
         systemMessageRequest,
@@ -273,6 +273,20 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "         'reps': 12(int)\n"
                   "      }\n"
                   "    },\n"
+              // Example with SuperSet\n"
+                  "    {\n"
+                  "      'name': 'Exact Combination Name from List',\n"
+                  "      'index': 2,\n"
+                  "      'numberOfSets': 3,\n"
+                  "      'exerciseSet': {\n"
+                  "         'exerciseSetType': 'SuperSet',\n"
+                  "         'restDurationInSeconds': 60,\n"
+                  "         'firstExercise': {'name': ' Exercise Name from List',},\n"
+                  "         'firstExerciseReps': 10,\n"
+                  "         'secondExercise': {'name': ' Exercise Name from List',},\n"
+                  "         'secondExerciseReps': 10\n"
+                  "      }\n"
+                  "    }\n"
                   "    // Additional exercises using the exact names from the list\n"
                   "  ]\n"
                   "}\n"

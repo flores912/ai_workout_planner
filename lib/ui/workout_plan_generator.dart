@@ -250,47 +250,39 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         role: OpenAIChatMessageRole.system,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "Given the weekly workout plan with the following day schedules:\n"
-                  "Day 1: $day1Json\n"
-                  "Day 2: $day2Json\n"
-                  "Day 3: $day3Json\n"
-                  "Day 4: $day4Json\n"
-                  "Day 5: $day5Json\n"
-                  "Day 6: $day6Json\n"
-                  "Day 7: $day7Json\n"
-                  "You are a Fitness Expert. Based on the context of the current week's workout schedule and workout criteria:$workoutCriteria,\n generate a workout plan for day:$dayNumber. Use this list of exercises from the list: $selectedExercises. It is crucial to use the exact names as they are spelled in this list, including the same capitalization, to match with the existing exercises. Format your response as a JSON object (DON'T NOTHING DIFFERENT THAN THESE FIELDS IN THE EXAMPLE). You can use 'StraightSet' or 'SuperSet' or a combination of both as needed for each exercise. Example of the expected JSON response for a day's workout:\n"
+              "You are a Fitness Expert. Based on the context of the current week's workout schedule and workout criteria: $workoutCriteria, generate a workout plan for day $dayNumber. Use ONLY the exercises from this list: $selectedExercises. Format your response as a JSON object with the following fields ONLY: 'name' (String), 'index' (int), 'numberOfSets' (int), 'exerciseSet' (object with fields 'exerciseSetType', 'restDurationInSeconds' (int), 'reps' (int) for StraightSet; additional fields 'firstExercise' (object with 'name' and 'reps'), 'firstExerciseReps' (int), 'secondExercise' (object with 'name' and 'reps'), 'secondExerciseReps' (int) for SuperSet). Do not include any other fields. Example of the expected JSON response:\n"
                   "{\n"
-                  "  'name': 'Strength Training',\n"
+                  "  'name': 'Full Body Strength and Cardio',\n"
                   "  'exercises': [\n"
                   "    // Example with StraightSet\n"
                   "    {\n"
-                  "      'name': 'Exact Name from List(String)',\n"
-                  "      'index': 1(int),\n"
-                  "      'numberOfSets': 4(int),\n"
+                  "      'name': 'Push-up',\n"
+                  "      'index': 1,\n"
+                  "      'numberOfSets': 3,\n"
                   "      'exerciseSet': {\n"
-                  "         'exerciseSetType': 'StraightSet',\n"
-                  "         'restDurationInSeconds': 90(int),\n"
-                  "         'reps': 12(int)\n"
+                  "        'exerciseSetType': 'StraightSet',\n"
+                  "        'restDurationInSeconds': 60,\n"
+                  "        'reps': 12\n"
                   "      }\n"
                   "    },\n"
                   "    // Example with SuperSet\n"
                   "    {\n"
-                  "      'name': 'Exact Combination Name from List',\n"
+                  "      'name': 'SuperSet Example',\n"
                   "      'index': 2,\n"
-                  "      'numberOfSets': 3,\n"
+                  "      'numberOfSets': 2,\n"
                   "      'exerciseSet': {\n"
-                  "         'exerciseSetType': 'SuperSet',\n"
-                  "         'restDurationInSeconds': 60,\n"
-                  "         'firstExercise': {'name': 'Exact First Exercise Name from List', 'reps': 10},\n"
-                  "         'firstExerciseReps': 10,\n"
-                  "         'secondExercise': {'name': 'Exact Second Exercise Name from List', 'reps': 10},\n"
-                  "         'secondExerciseReps': 10\n"
+                  "        'exerciseSetType': 'SuperSet',\n"
+                  "        'restDurationInSeconds': 60,\n"
+                  "        'firstExercise': {'name': 'Dumbbell Bench Press', 'reps': 10},\n"
+                  "        'firstExerciseReps': 10,\n"
+                  "        'secondExercise': {'name': 'Dumbbell Fly', 'reps': 10},\n"
+                  "        'secondExerciseReps': 10\n"
                   "      }\n"
                   "    }\n"
-                  "    // Additional exercises using the exact names from the list\n"
+                  "    // Additional exercises using the exact structure as above\n"
                   "  ]\n"
                   "}\n"
-                  "Respond in this format."
+                  "Respond in this format, adhering strictly to the provided structure and fields."
           )
         ]
     );
@@ -302,7 +294,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      temperature: 0.5,
+      temperature: 0.2,
       n: 1,
       messages: [
         systemMessageRequest,

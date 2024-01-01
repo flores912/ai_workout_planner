@@ -74,7 +74,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     if(widget.organizationId !=null){
       OpenAI.organization = widget.organizationId;
     }
-    OpenAI.requestsTimeOut = const Duration(seconds: 30);
+    OpenAI.requestsTimeOut = const Duration(seconds: 60);
     OpenAI.showLogs = true;
     OpenAI.showResponsesLogs = true;
 

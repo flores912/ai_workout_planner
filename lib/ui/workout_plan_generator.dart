@@ -246,67 +246,64 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     String day7Json = jsonEncode(week.day7.toJson());
 
     // System message request
+// System message request
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "Given the weekly workout plan with the following day schedules:\n"
+              "As a Fitness Expert, you are provided with a weekly workout schedule. Each day's plan is detailed in the following JSON data:\n"
                   "Day 1: $day1Json\n"
                   "Day 2: $day2Json\n"
                   "Day 3: $day3Json\n"
                   "Day 4: $day4Json\n"
                   "Day 5: $day5Json\n"
                   "Day 6: $day6Json\n"
-                  "Day 7: $day7Json\n"
-                  "You are a Fitness Expert. Based on the context of the current week's workout schedule and workout criteria:$workoutCriteria,\n generate a workout for day:$dayNumber. You can use 'StraightSet' or 'SuperSet' or a combination of both as needed for each exercise. Example of the expected JSON response for a day's workout:\n"
+                  "Day 7: $day7Json\n\n"
+                  "Based on the workout criteria: $workoutCriteria and the schedule for the current week, your task is to generate a comprehensive workout plan for day number $dayNumber. The workout plan should be formatted as a JSON object. Each exercise in the plan can be either a 'StraightSet' or a 'SuperSet', or a combination of both, as required. Below is an example format of how the JSON response should be structured:\n\n"
                   "{\n"
-                  "  'name': 'Workout Name',\n"
+                  "  'name': 'Specific Workout Name',\n"
                   "  'exercises': [\n"
-                  "    // Example with StraightSet\n"
+                  "    // Example of an exercise with StraightSet\n"
                   "    {\n"
-                  "      'name': 'Exercise Name ',\n"
-                  "      'index': 1(int),\n"
-                  "      'numberOfSets': 4(int),\n"
+                  "      'name': 'Specific Exercise Name',\n"
+                  "      'index': 1, // Integer value\n"
+                  "      'numberOfSets': 4, // Integer value\n"
                   "      'exerciseSet': {\n"
                   "         'exerciseSetType': 'StraightSet',\n"
-                  "         'restDurationInSeconds': 90(int),\n"
-                  "         'reps': 12(int)\n"
+                  "         'restDurationInSeconds': 90, // Integer value\n"
+                  "         'reps': 12 // Integer value\n"
                   "      }\n"
                   "    },\n"
-              // Example with SuperSet\n"
+                  "    // Example of an exercise with SuperSet\n"
                   "    {\n"
-                  "      'name': 'Exercise Name',\n"
-                  "      'index': 2,\n"
-                  "      'numberOfSets': 3,\n"
+                  "      'name': 'Another Specific Exercise Name',\n"
+                  "      'index': 2, // Integer value\n"
+                  "      'numberOfSets': 3, // Integer value\n"
                   "      'exerciseSet': {\n"
                   "         'exerciseSetType': 'SuperSet',\n"
-                  "         'restDurationInSeconds': 60,\n"
-                  "         'firstExercise': {'name': ' Exercise Name from List',},\n"
-                  "         'firstExerciseReps': 10,\n"
-                  "         'secondExercise': {'name': ' Exercise Name from List',},\n"
-                  "         'secondExerciseReps': 10\n"
+                  "         'restDurationInSeconds': 60, // Integer value\n"
+                  "         'firstExercise': {'name': 'First Exercise Name in SuperSet'},\n"
+                  "         'firstExerciseReps': 10, // Integer value\n"
+                  "         'secondExercise': {'name': 'Second Exercise Name in SuperSet'},\n"
+                  "         'secondExerciseReps': 10 // Integer value\n"
                   "      }\n"
                   "    }\n"
-                  "    // Additional exercises using the exact names from the list\n"
+                  "    // Include additional exercises as needed\n"
                   "  ]\n"
-                  "}\n"
-                  "Respond in this format."
+                  "}\n\n"
+                  "Please structure your response in this format, ensuring accuracy and completeness."
           )
         ]
     );
 
-
     // User message request
 
-    // OpenAI Chat API call
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
       temperature: 0.2,
       n: 1,
-      messages: [
-        systemMessageRequest,
-      ],
+      messages: [systemMessageRequest],
     );
 
     late Workout workoutOfDay;
@@ -332,40 +329,10 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
           continue;
         }
 
-        ExerciseSet exerciseSet;
-        if (exerciseSetDetails['exerciseSetType'] == 'StraightSet') {
-          exerciseSet = StraightSet(
-            restDurationInSeconds: exerciseSetDetails['restDurationInSeconds'],
-            reps: exerciseSetDetails['reps'],
-            exerciseSetType: ExerciseSetType.straightSet,
-          );
-        } else if (exerciseSetDetails['exerciseSetType'] == 'SuperSet') {
-          var firstExerciseDetails = exerciseSetDetails['firstExercise'];
-          var secondExerciseDetails = exerciseSetDetails['secondExercise'];
-
-          Exercise? firstExercise = findClosestMatchExerciseByName(firstExerciseDetails['name']);
-          Exercise? secondExercise = findClosestMatchExerciseByName(secondExerciseDetails['name']);
-
-          if (firstExercise == null || secondExercise == null) {
-            print('One or both exercises in SuperSet not found');
-            continue;
-          }
-
-          exerciseSet = SuperSet(
-            restDurationInSeconds: exerciseSetDetails['restDurationInSeconds'],
-            firstExerciseReps: firstExerciseDetails['reps'],
-            secondExerciseReps: secondExerciseDetails['reps'],
-            firstExercise: firstExercise,
-            secondExercise: secondExercise,
-            exerciseSetType: ExerciseSetType.superSet,
-          );
-        } else {
-          throw Exception('Invalid exercise set type');
-        }
-
         foundExercise.index = index;
-        foundExercise.exerciseSet = exerciseSet;
         foundExercise.numberOfSets = numberOfSets;
+        foundExercise.exerciseSet = parseExerciseSet(exerciseSetDetails);
+
         exercisesForWorkout.add(foundExercise);
       }
 
@@ -373,7 +340,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         name: jsonResponse['name'],
         exercises: exercisesForWorkout,
       );
-
     } else {
       print('No response or invalid format received from OpenAI.');
     }
@@ -381,6 +347,41 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     return workoutOfDay;
   }
 
+  ExerciseSet parseExerciseSet(Map<String, dynamic> json) {
+    ExerciseSetType setType = ExerciseSetType.values.firstWhere(
+          (e) => e.toString().split('.').last == json['exerciseSetType'],
+      orElse: () => throw Exception('Invalid exercise set type'),
+    );
+
+    switch (setType) {
+      case ExerciseSetType.straightSet:
+        return StraightSet(
+          restDurationInSeconds: json['restDurationInSeconds'],
+          reps: json['reps'],
+          exerciseSetType: setType,
+        );
+
+      case ExerciseSetType.superSet:
+        Exercise? firstExercise = findClosestMatchExerciseByName(json['firstExercise']['name']);
+        Exercise? secondExercise = findClosestMatchExerciseByName(json['secondExercise']['name']);
+
+        if (firstExercise == null || secondExercise == null) {
+          throw Exception('One or both exercises in SuperSet not found');
+        }
+
+        return SuperSet(
+          restDurationInSeconds: json['restDurationInSeconds'],
+          firstExercise: firstExercise,
+          firstExerciseReps: json['firstExerciseReps'],
+          secondExercise: secondExercise,
+          secondExerciseReps: json['secondExerciseReps'],
+          exerciseSetType: setType,
+        );
+
+      default:
+        throw Exception('Unhandled exercise set type');
+    }
+  }
 
 
 

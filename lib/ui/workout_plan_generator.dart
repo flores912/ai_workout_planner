@@ -53,7 +53,7 @@ class WorkoutPlanGenerator extends StatefulWidget {
 
 class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
-  late List<String>selectedExercises;
+  //late List<String>selectedExercises;
   late String workoutCriteria;
 
   @override
@@ -107,7 +107,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
   Future<WorkoutPlan> generateWorkoutPlan({required String workoutCriteria}) async {
 
-    selectedExercises = await selectExercisesForWorkoutPlan(workoutCriteria: workoutCriteria);
+    //selectedExercises = await selectExercisesForWorkoutPlan(workoutCriteria: workoutCriteria);
     // System message request for generating a workout plan
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
@@ -258,7 +258,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "Day 5: $day5Json\n"
                   "Day 6: $day6Json\n"
                   "Day 7: $day7Json\n"
-                  "You are a Fitness Expert. Based on the context of the current week's workout schedule and workout criteria:$workoutCriteria,\n generate a workout plan for day:$dayNumber. Use this list of exercises from the list: $selectedExercises. It is crucial to use the exact names as they are spelled in this list, including the same capitalization, to match with the existing exercises. Format your response as a JSON object (DON'T ADD NOTHING DIFFERENT THAN THE FIELDS IN THE EXAMPLE). You can use 'StraightSet' or 'SuperSet' or a combination of both as needed for each exercise. Example of the expected JSON response for a day's workout:\n"
+                  "You are a Fitness Expert. Based on the context of the current week's workout schedule and workout criteria:$workoutCriteria,\n generate a workout plan for day:$dayNumber.  It is crucial to use the exact names as they are spelled in this list, including the same capitalization, to match with the existing exercises. Format your response as a JSON object (DON'T ADD NOTHING DIFFERENT THAN THE FIELDS IN THE EXAMPLE). You can use 'StraightSet' or 'SuperSet' or a combination of both as needed for each exercise. Example of the expected JSON response for a day's workout:\n"
                   "{\n"
                   "  'name': 'Strength Training',\n"
                   "  'exercises': [\n"

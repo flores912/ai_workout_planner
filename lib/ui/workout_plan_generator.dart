@@ -450,8 +450,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
             "As a Fitness Expert, select approximately 20 exercises from the following list based on the workout criteria: '$workoutCriteria'. Ensure a balanced selection suitable for a full-body workout, avoiding overuse of similar exercises. Use the exact spelling, grammar, and capitalization from the list:\n$EXERCISE_NAMES_LIST\n"
                 "Format your response as a JSON array of selected exercise names. Example of the expected JSON response:\n"
                 "[\n"
-                "  'Exercise 1',\n"
-                "  'Exercise 2',\n"
+                "  'Exercise 1 from list',\n"
+                "  'Exercise 2 from list',\n"
                 "  ... (more exercises)\n"
                 "]\n"
                 "Respond in this format.")]

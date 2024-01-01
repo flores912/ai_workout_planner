@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:ai_workout_planner/consts/all_exercise_names.dart';
 import 'package:ai_workout_planner/consts/exercises.dart';
 import 'package:ai_workout_planner/models/exercise.dart';
 import 'package:ai_workout_planner/models/workout.dart';
@@ -9,28 +8,68 @@ import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 import 'package:string_similarity/string_similarity.dart';
 
+import '../consts/all_exercise_names.dart';
 import '../models/exercise_set.dart';
 import '../models/week.dart';
 import '../models/workout_plan.dart';
 
 class WorkoutPlanGenerator extends StatefulWidget {
-  final String workoutCriteria;
   final String apiKey;
-
   final String? organizationId;
-  const WorkoutPlanGenerator({super.key, required this.workoutCriteria, required this.apiKey, this.organizationId});
 
+  // Additional optional parameters with default values
+  final String fitnessLevel;
+  final String workoutGoals;
+  final String preferredExercises;
+  final String equipmentAvailability;
+  final String medicalConsiderations;
+  final String timeAvailability;
+  final int numberOfWorkoutsPerWeek;
+  final String preferredWorkoutDays;
+  final String preferredRestDays;
+  final Duration workoutDuration;
+
+  const WorkoutPlanGenerator({
+    super.key,
+    required this.apiKey,
+    this.organizationId,
+    this.fitnessLevel = 'beginner', // Default value
+    this.workoutGoals = 'Increase strength and muscle mass', // Updated default value
+    this.preferredExercises = 'Bodyweight exercises, Cardio', // Updated default value
+    this.equipmentAvailability = 'Limited home equipment', // Updated default value
+    this.medicalConsiderations = 'None', // Updated default value
+    this.timeAvailability = '30-60 minutes per session', // Updated default value
+    this.numberOfWorkoutsPerWeek = 3, // Default value
+    this.preferredWorkoutDays = 'Monday, Wednesday, Friday', // Updated default value
+    this.preferredRestDays = 'Weekends', // Updated default value
+    this.workoutDuration = const Duration(minutes: 30), // Default value
+  });
   @override
   WorkoutPlanGeneratorState createState() => WorkoutPlanGeneratorState();
 }
 
+
 class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
   late List<String>selectedExercises;
+  late String workoutCriteria;
 
   @override
   void initState() {
     super.initState();
+
+
+    // Constructing the workout criteria string
+    workoutCriteria = 'Fitness Level: ${widget.fitnessLevel}\n'
+        'Workout Goals: ${widget.workoutGoals}\n'
+        'Preferred Exercises: ${widget.preferredExercises}\n'
+        'Equipment Availability: ${widget.equipmentAvailability}\n'
+        'Medical Considerations: ${widget.medicalConsiderations}\n'
+        'Time Availability: ${widget.timeAvailability}\n'
+        'Number of Workouts Per Week: ${widget.numberOfWorkoutsPerWeek}\n'
+        'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
+        'Preferred Rest Days: ${widget.preferredRestDays}\n'
+        'Workout Duration: ${widget.workoutDuration.inMinutes} minutes';
     OpenAI.apiKey = widget.apiKey;
     if(widget.organizationId !=null){
       OpenAI.organization = widget.organizationId;
@@ -43,7 +82,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<WorkoutPlan>(
-        future: generateWorkoutPlan(workoutCriteria: widget.workoutCriteria),
+        future: generateWorkoutPlan(workoutCriteria:workoutCriteria),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Display a loading indicator while the future is in progress
@@ -378,18 +417,20 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     print('Selecting exercises for plan');
 
     // Construct the system prompt with a JSON example
-    OpenAIChatCompletionChoiceMessageModel systemMessageRequest =
-    OpenAIChatCompletionChoiceMessageModel(
+// Construct the system prompt for selecting exercises
+    OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "You are a Fitness Expert. Generate a weekly workout plan that adheres to the user's criteria, particularly the number of workouts per week. Ensure the plan balances rest days and workout intensity, avoiding consecutive intensive days for the same muscle groups. Your response should be a JSON object that corresponds to a 'Week' class, detailing the workout or rest status of each day. Example of the expected JSON response:\n"
-                "{\n"
-                "  'day1': { 'isRestDay': false, 'workoutSplit': 'Upper' },\n"
-                "  'day2': { 'isRestDay': true, 'workoutSplit': 'Rest' },\n"
-                "  ... (and so on for each day of the week, aligning with the user's criteria on the number of workouts per week)\n"
-                "}\n"
+            "As a Fitness Expert, select approximately 50 exercises from the following list based on the workout criteria: '$workoutCriteria'. Ensure a balanced selection suitable for a full-body workout, avoiding overuse of similar exercises. Use the exact spelling, grammar, and capitalization from the list:\n$EXERCISE_NAMES_LIST\n"
+                "Format your response as a JSON array of selected exercise names. Example of the expected JSON response:\n"
+                "[\n"
+                "  'Exercise 1',\n"
+                "  'Exercise 2',\n"
+                "  ... (more exercises)\n"
+                "]\n"
                 "Respond in this format.")]
     );
+
 
 // User message request with workout criteria
     OpenAIChatCompletionChoiceMessageModel userMessageRequest =

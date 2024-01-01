@@ -254,36 +254,61 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     String day7Json = jsonEncode(week.day7.toJson());
 
     // System message request
-    // Construct the system prompt for generating a workout of the day
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "As a Fitness Expert, create a detailed workout for day $dayNumber of the user's weekly plan. Use exercises from the selected list and tailor them to fit the day's specific workout focus, like 'Chest and Triceps' or 'Lower Body'. Ensure the workout is balanced and follows a logical progression. Format your response as a JSON object with 'StraightSet' and 'SuperSet' classes where applicable. Example response format:\n"
+              "Given the weekly workout plan with the following day schedules:\n"
+                  "Day 1: $day1Json\n"
+                  "Day 2: $day2Json\n"
+                  "Day 3: $day3Json\n"
+                  "Day 4: $day4Json\n"
+                  "Day 5: $day5Json\n"
+                  "Day 6: $day6Json\n"
+                  "Day 7: $day7Json\n"
+                  "You are a Fitness Expert. Based on user preferences, limitations, and the context of the current week's workout schedule, generate a workout plan for day:$dayNumber. Use this list of exercises from the list: $selectedExercises. It is crucial to use the exact names as they are spelled in this list, including the same capitalization, to match with the existing exercises. Format your response as a JSON object. You can use 'StraightSet' or 'SuperSet' or a combination of both as needed for each exercise. Example of the expected JSON response for a day's workout:\n"
                   "{\n"
-                  "  'name': 'Chest and Triceps Workout',\n"
+                  "  'name': 'Strength Training',\n"
                   "  'exercises': [\n"
-                  "    { 'name': 'ExerciseNameFromList', 'index': 1, 'numberOfSets': 3, 'exerciseSet': { 'exerciseSetType': 'StraightSet', 'restDurationInSeconds': 90, 'reps': 10 } },\n"
-                  "    { 'name': 'AnotherExerciseNameFromList', 'index': 2, 'numberOfSets': 2, 'exerciseSet': { 'exerciseSetType': 'SuperSet', 'restDurationInSeconds': 60, 'firstExercise': {...}, 'secondExercise': {...} } }\n"
+                  "    // Example with StraightSet\n"
+                  "    {\n"
+                  "      'name': 'Exact Name from List',\n"
+                  "      'index': 1,\n"
+                  "      'numberOfSets': 4,\n"
+                  "      'exerciseSet': {\n"
+                  "         'exerciseSetType': 'StraightSet',\n"
+                  "         'restDurationInSeconds': 90,\n"
+                  "         'reps': 12\n"
+                  "      }\n"
+                  "    },\n"
+                  "    // Example with SuperSet\n"
+                  "    {\n"
+                  "      'name': 'Exact Combination Name from List',\n"
+                  "      'index': 2,\n"
+                  "      'numberOfSets': 3,\n"
+                  "      'exerciseSet': {\n"
+                  "         'exerciseSetType': 'SuperSet',\n"
+                  "         'restDurationInSeconds': 60,\n"
+                  "         'firstExercise': {'name': 'Exact First Exercise Name from List', 'reps': 10},\n"
+                  "         'firstExerciseReps': 10,\n"
+                  "         'secondExercise': {'name': 'Exact Second Exercise Name from List', 'reps': 10},\n"
+                  "         'secondExerciseReps': 10\n"
+                  "      }\n"
+                  "    }\n"
+                  "    // Additional exercises using the exact names from the list\n"
                   "  ]\n"
                   "}\n"
+                  "Respond in this format."
           )
-        ]);
+        ]
+    );
 
 
     // User message request
     OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [
-          OpenAIChatCompletionChoiceMessageContentItemModel.text("Given the weekly workout plan with the following day schedules:\n"
-          "Day 1: $day1Json\n"
-              "Day 2: $day2Json\n"
-              "Day 3: $day3Json\n"
-              "Day 4: $day4Json\n"
-              "Day 5: $day5Json\n"
-              "Day 6: $day6Json\n"
-              "Day 7: $day7Json\n"
-              'and workout plan criteria:$workoutCriteria')
+          OpenAIChatCompletionChoiceMessageContentItemModel.text(workoutCriteria)
         ]
     );
 

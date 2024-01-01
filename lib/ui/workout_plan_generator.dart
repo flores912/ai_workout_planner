@@ -264,7 +264,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "  'exercises': [\n"
                   "    // Example with StraightSet\n"
                   "    {\n"
-                  "      'name': 'Exact Name ',\n"
+                  "      'name': 'Exercise Name ',\n"
                   "      'index': 1(int),\n"
                   "      'numberOfSets': 4(int),\n"
                   "      'exerciseSet': {\n"

@@ -27,6 +27,7 @@ class WorkoutPlanGenerator extends StatefulWidget {
   final int numberOfWorkoutsPerWeek;
   final String preferredWorkoutDays;
   final String preferredRestDays;
+  final int numberOfWeeks;
   final Duration workoutDuration;
 
   const WorkoutPlanGenerator({
@@ -42,7 +43,8 @@ class WorkoutPlanGenerator extends StatefulWidget {
     this.numberOfWorkoutsPerWeek = 3, // Default value
     this.preferredWorkoutDays = 'Monday, Wednesday, Friday', // Updated default value
     this.preferredRestDays = 'Weekends', // Updated default value
-    this.workoutDuration = const Duration(minutes: 30), // Default value
+    this.workoutDuration = const Duration(minutes: 30),
+    this.numberOfWeeks = 6,// Default value
   });
   @override
   WorkoutPlanGeneratorState createState() => WorkoutPlanGeneratorState();
@@ -69,7 +71,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         'Number of Workouts Per Week: ${widget.numberOfWorkoutsPerWeek}\n'
         'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
         'Preferred Rest Days: ${widget.preferredRestDays}\n'
-        'Workout Duration: ${widget.workoutDuration.inMinutes} minutes';
+        'Workout Duration: ${widget.workoutDuration.inMinutes} minutes'
+        'Weeks: ${widget.numberOfWeeks} weeks';
     OpenAI.apiKey = widget.apiKey;
     if(widget.organizationId !=null){
       OpenAI.organization = widget.organizationId;

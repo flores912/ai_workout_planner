@@ -71,7 +71,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         'Number of Workouts Per Week: ${widget.numberOfWorkoutsPerWeek}\n'
         'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
         'Preferred Rest Days: ${widget.preferredRestDays}\n'
-        'Workout Duration: ${widget.workoutDuration.inMinutes} minutes'
+       // 'Workout Duration: ${widget.workoutDuration.inMinutes} minutes'
         'Weeks: ${widget.numberOfWeeks} weeks';
     OpenAI.apiKey = widget.apiKey;
     if(widget.organizationId !=null){
@@ -319,7 +319,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
-      temperature: 0.4,
+      temperature: 0.3,
       n: 1,
       messages: [
         systemMessageRequest,

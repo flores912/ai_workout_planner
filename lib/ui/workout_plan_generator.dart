@@ -343,8 +343,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
           var firstExerciseDetails = exerciseSetDetails['firstExercise'];
           var secondExerciseDetails = exerciseSetDetails['secondExercise'];
 
-          Exercise? firstExercise = findExerciseByName(firstExerciseDetails['name'].toLowerCase());
-          Exercise? secondExercise = findExerciseByName(secondExerciseDetails['name'].toLowerCase());
+          Exercise? firstExercise = findClosestMatchExerciseByName(firstExerciseDetails['name']);
+          Exercise? secondExercise = findClosestMatchExerciseByName(secondExerciseDetails['name']);
 
           if (firstExercise == null || secondExercise == null) {
             print('One or both exercises in SuperSet not found');
@@ -383,17 +383,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
 
 
-
-// Helper function to find an exercise by name
-  Exercise? findExerciseByName(String exerciseName) {
-    // Assuming you have a global or accessible list of exercises
-    for (var exercise in AllExercises().list) {
-      if (exercise.name.toLowerCase() == exerciseName) {
-        return exercise;
-      }
-    }
-    return null;
-  }
 
   Future<void> generateWorkoutsForWeek({
     required String workoutCriteria,
@@ -483,7 +472,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     }
 
     // You can adjust the threshold value as needed
-    if (highestSimilarity > 0.1) {
+    if (highestSimilarity > 0.5) {
       return closestMatch;
     } else {
       return null;

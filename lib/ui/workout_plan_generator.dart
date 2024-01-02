@@ -8,7 +8,6 @@ import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 import 'package:string_similarity/string_similarity.dart';
 
-import '../consts/all_exercise_names.dart';
 import '../models/exercise_set.dart';
 import '../models/week.dart';
 import '../models/workout_plan.dart';
@@ -30,10 +29,13 @@ class WorkoutPlanGenerator extends StatefulWidget {
   final int numberOfWeeks;
   final Duration workoutDuration;
 
+  final String systemMessage;
+
   const WorkoutPlanGenerator({
     super.key,
     required this.apiKey,
     this.organizationId,
+    this.systemMessage = 'You are a Fitness Expert.',
     this.fitnessLevel = 'beginner', // Default value
     this.workoutGoals = 'Increase strength and muscle mass', // Updated default value
     this.preferredExercises = 'Bodyweight exercises, Cardio', // Updated default value
@@ -55,6 +57,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
   //late List<String>selectedExercises;
   late String workoutCriteria;
+
+  late OpenAIChatCompletionChoiceMessageModel systemMessage;
 
   @override
   void initState() {
@@ -80,6 +84,16 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAI.requestsTimeOut = const Duration(seconds: 60);
     OpenAI.showLogs = true;
     OpenAI.showResponsesLogs = true;
+
+     systemMessage = OpenAIChatCompletionChoiceMessageModel(
+        role: OpenAIChatMessageRole.system,
+        content: [
+          OpenAIChatCompletionChoiceMessageContentItemModel.text(
+              '${widget.systemMessage}\n '
+                  'Format your responses in JSON in the structure the user wants.'
+          )
+        ]
+    );
 
   }
   @override
@@ -109,11 +123,11 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
     //selectedExercises = await selectExercisesForWorkoutPlan(workoutCriteria: workoutCriteria);
     // System message request for generating a workout plan
-    OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
-        role: OpenAIChatMessageRole.system,
+    OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
+        role: OpenAIChatMessageRole.user,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "You are a Fitness Expert. Based on the user's workout criteria $workoutCriteria\n, create a comprehensive workout plan. Format your response as a JSON object that matches the structure of the 'WorkoutPlan' class, with an emphasis on the plan's name, description, and number of weeks. Example of the expected JSON response for a workout plan:\n"
+              " Based on the user's workout criteria $workoutCriteria\n, create a comprehensive workout plan. Format your response as a JSON object that matches the structure of the 'WorkoutPlan' class, with an emphasis on the plan's name, description, and number of weeks. Example of the expected JSON response for a workout plan:\n"
                   "{\n"
                   "  'name': '(Workout Plan Name)',\n"
                   "  'description': '(description)',\n"
@@ -133,7 +147,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       temperature: 0.5,
       n: 1,
       messages: [
-        systemMessageRequest,
+        systemMessage,
+        userMessageRequest,
       ],
     );
 
@@ -174,11 +189,11 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
      */
     // Construct the system prompt with a JSON example
-    OpenAIChatCompletionChoiceMessageModel systemMessageRequest =
+    OpenAIChatCompletionChoiceMessageModel userMessageRequest =
     OpenAIChatCompletionChoiceMessageModel(
-        role: OpenAIChatMessageRole.system,
+        role: OpenAIChatMessageRole.user,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "You are a Fitness Expert. Based on this workout criteria:$workoutCriteria\n"
+            "Based on this workout criteria:$workoutCriteria\n"
                 " Create a weekly workout plan based on workout criteria provided by user. Make sure you keep in mind rest time between each day(don't have intensive days next to each other working out same muscles). Format your response as a JSON object that matches the structure of a 'Week' class. Example of the expected JSON response:\n"
                 "{\n"
                 "  'day1': { 'isRestDay': false "
@@ -204,7 +219,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       n: 1,
 
       messages: [
-        systemMessageRequest,
+        systemMessage,
+        userMessageRequest,
       ],
     );
 
@@ -251,11 +267,11 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     // System message request
 // System message request
 // System message request
-    OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
-        role: OpenAIChatMessageRole.system,
+    OpenAIChatCompletionChoiceMessageModel userMessageRequest = OpenAIChatCompletionChoiceMessageModel(
+        role: OpenAIChatMessageRole.user,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "As a Fitness Expert, you are provided with a weekly workout schedule, detailed in the following JSON data for each day:\n"
+              "You are provided with a weekly workout schedule, detailed in the following JSON data for each day:\n"
                   "Day 1: $day1Json\n"
                   "Day 2: $day2Json\n"
                   "Day 3: $day3Json\n"
@@ -314,7 +330,9 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       model: "gpt-3.5-turbo-1106",
       temperature: 0.8,
       n: 1,
-      messages: [systemMessageRequest],
+      messages: [
+        systemMessage,
+        userMessageRequest],
     );
 
     late Workout workoutOfDay;
@@ -418,55 +436,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     if (!week.day7.isRestDay) {
       week.day7.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 7);
     }
-  }
-  Future<List<String>> selectExercisesForWorkoutPlan({required String workoutCriteria}) async {
-    print('Selecting exercises for plan');
-
-    // Construct the system prompt for selecting exercises
-    OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
-        role: OpenAIChatMessageRole.system,
-        content: [
-          OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "As a Fitness Expert, based on the workout criteria '$workoutCriteria', select approximately 20 exercises from the provided list. Ensure a balanced selection suitable for a full-body workout, avoiding overuse of similar exercises. Use the exact spelling, grammar, and capitalization from the list. Format your response as a JSON object with the key 'selectedExercises' containing an array of exercise names. Example of the expected JSON response:\n"
-                  "{\n"
-                  "  'selectedExercises': [\n"
-                  "    'ExerciseName1',\n"
-                  "    'ExerciseName2',\n"
-                  "    ... (more exercises)\n"
-                  "  ]\n"
-                  "}\n"
-                  "Respond in this format, ensuring to select only from the provided list:$EXERCISE_NAMES_LIST")
-        ]
-    );
-
-    // OpenAI Chat API call
-    final chat = await OpenAI.instance.chat.create(
-      responseFormat: {"type": "json_object"},
-      model: "gpt-3.5-turbo-1106",
-      temperature: 0.5,
-      n: 1,
-      messages: [
-        systemMessageRequest,
-      ],
-    );
-
-    final message = chat.choices.first.message;
-    List<String> selectedExercises = [];
-
-    if (message.content!.first.text != null) {
-      String text = message.content!.first.text!;
-      Map<String, dynamic> jsonResponse = jsonDecode(text);
-      List<dynamic> exercisesList = jsonResponse['selectedExercises'];
-
-      // Add selected exercises to the list
-      exercisesList.forEach((exerciseName) {
-        selectedExercises.add(exerciseName.toString());
-      });
-    } else {
-      print('No response or invalid format received from OpenAI.');
-    }
-
-    return selectedExercises;
   }
   Exercise? findClosestMatchExerciseByName(String name) {
     double highestSimilarity = 0.0;

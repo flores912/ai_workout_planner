@@ -247,11 +247,12 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
 
     // System message request
 // System message request
+// System message request
     OpenAIChatCompletionChoiceMessageModel systemMessageRequest = OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.system,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "As a Fitness Expert, you are provided with a weekly workout schedule. Each day's plan is detailed in the following JSON data:\n"
+              "As a Fitness Expert, you are provided with a weekly workout schedule, detailed in the following JSON data for each day:\n"
                   "Day 1: $day1Json\n"
                   "Day 2: $day2Json\n"
                   "Day 3: $day3Json\n"
@@ -259,43 +260,50 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "Day 5: $day5Json\n"
                   "Day 6: $day6Json\n"
                   "Day 7: $day7Json\n\n"
-                  "Based on the workout criteria: $workoutCriteria and the schedule for the current week, your task is to generate a comprehensive workout plan for day number $dayNumber. The workout plan should be formatted as a JSON object. Each exercise in the plan can be either a 'StraightSet' or a 'SuperSet', or a combination of both, as required. Below is an example format of how the JSON response should be structured:\n\n"
+                  "Based on the workout criteria: $workoutCriteria and the current week's schedule, generate a comprehensive workout plan for day number $dayNumber. The workout plan should be formatted as a JSON object. Each exercise in the plan can be of type 'straight', 'timed', or 'failure'. Here is the structure for the expected JSON response:\n\n"
                   "{\n"
-                  "  'name': 'Specific Workout Name',\n"
+                  "  'name': 'Workout Name',\n"
                   "  'exercises': [\n"
-                  "    // Example of an exercise with StraightSet\n"
+                  "    // Example of a 'straight' set exercise\n"
                   "    {\n"
-                  "      'name': 'Specific Exercise Name',\n"
+                  "      'name': 'Exercise Name',\n"
                   "      'index': 1, // Integer value\n"
                   "      'numberOfSets': 4, // Integer value\n"
                   "      'exerciseSet': {\n"
-                  "         'exerciseSetType': 'StraightSet',\n"
+                  "         'exerciseSetType': 'straight',\n"
                   "         'restDurationInSeconds': 90, // Integer value\n"
-                  "         'reps': 12 // Integer value\n"
+                  "         'reps': 12 // Optional integer value\n"
                   "      }\n"
                   "    },\n"
-                  "    // Example of an exercise with SuperSet\n"
+                  "    // Example of a 'timed' set exercise\n"
                   "    {\n"
-                  "      'name': 'Another Specific Exercise Name',\n"
+                  "      'name': 'Another Exercise Name',\n"
                   "      'index': 2, // Integer value\n"
                   "      'numberOfSets': 3, // Integer value\n"
                   "      'exerciseSet': {\n"
-                  "         'exerciseSetType': 'SuperSet',\n"
+                  "         'exerciseSetType': 'timed',\n"
                   "         'restDurationInSeconds': 60, // Integer value\n"
-                  "         'firstExercise': {'name': 'First Exercise Name in SuperSet'},\n"
-                  "         'firstExerciseReps': 10, // Integer value\n"
-                  "         'secondExercise': {'name': 'Second Exercise Name in SuperSet'},\n"
-                  "         'secondExerciseReps': 10 // Integer value\n"
+                  "         'timedSetInSeconds': 30 // Optional integer value\n"
+                  "      }\n"
+                  "    },\n"
+                  "    // Example of a 'failure' set exercise (reps till failure)\n"
+                  "    {\n"
+                  "      'name': 'Third Exercise Name',\n"
+                  "      'index': 3, // Integer value\n"
+                  "      'numberOfSets': 2, // Integer value\n"
+                  "      'exerciseSet': {\n"
+                  "         'exerciseSetType': 'failure',\n"
+                  "         'restDurationInSeconds': 75 // Integer value\n"
+                  "         // 'reps' field is not applicable for 'failure' type\n"
                   "      }\n"
                   "    }\n"
                   "    // Include additional exercises as needed\n"
                   "  ]\n"
                   "}\n\n"
-                  "Please structure your response in this format, ensuring accuracy and completeness."
+                  "Please ensure the response is accurate and complete, adhering to this format."
           )
         ]
     );
-
     // User message request
 
     final chat = await OpenAI.instance.chat.create(
@@ -354,28 +362,25 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     );
 
     switch (setType) {
-      case ExerciseSetType.straightSet:
-        return StraightSet(
+      case ExerciseSetType.straight:
+        return ExerciseSet(
           restDurationInSeconds: json['restDurationInSeconds'],
-          reps: json['reps'],
+          reps: json['reps'], // Note that this is nullable.
           exerciseSetType: setType,
         );
 
-      case ExerciseSetType.superSet:
-        Exercise? firstExercise = findClosestMatchExerciseByName(json['firstExercise']['name']);
-        Exercise? secondExercise = findClosestMatchExerciseByName(json['secondExercise']['name']);
-
-        if (firstExercise == null || secondExercise == null) {
-          throw Exception('One or both exercises in SuperSet not found');
-        }
-
-        return SuperSet(
+      case ExerciseSetType.timed:
+        return ExerciseSet(
           restDurationInSeconds: json['restDurationInSeconds'],
-          firstExercise: firstExercise,
-          firstExerciseReps: json['firstExerciseReps'],
-          secondExercise: secondExercise,
-          secondExerciseReps: json['secondExerciseReps'],
+          timedSetInSeconds: json['timedSetInSeconds'], // Note that this is nullable.
           exerciseSetType: setType,
+        );
+
+      case ExerciseSetType.failure:
+        return ExerciseSet(
+          restDurationInSeconds: json['restDurationInSeconds'],
+          exerciseSetType: setType,
+          // 'reps' and 'timedSetInSeconds' are not applicable for 'failure' type.
         );
 
       default:

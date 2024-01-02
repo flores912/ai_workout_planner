@@ -50,40 +50,58 @@ class WorkoutDetailPage extends StatelessWidget {
               itemCount: exercises[0].numberOfSets, // Assuming `numberOfSets` is a property in the Exercise model
               itemBuilder: (context, setIndex) {
                 var exerciseSet = exercises[0].exerciseSet; // Assuming each Exercise has an ExerciseSet
-                // Check if the exercise set is a straight set or superset
-                if (exerciseSet is StraightSet) {
-                  // If it's a straight set, show the reps
-                  return ListTile(
-                    leading: CircleAvatar(child: Text('${setIndex + 1}')),
-                    title: Text('${exerciseSet.reps} Reps'),
-                    subtitle: Text('Rest for ${exerciseSet.restDurationInSeconds}s'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.timer),
-                      onPressed: () {
-                        // Implement set timer functionality
-                      },
-                    ),
-                  );
-                } else if (exerciseSet is SuperSet) {
-                  // If it's a superset, show the exercises in the superset
-                  return ListTile(
-                    leading: CircleAvatar(child: Text('${setIndex + 1}')),
-                    title: Text('Superset: ${exerciseSet.firstExercise.name} and ${exerciseSet.secondExercise.name}'),
-                    subtitle: Text('Do ${exerciseSet.firstExerciseReps} reps of ${exerciseSet.firstExercise.name} and ${exerciseSet.secondExerciseReps} reps of ${exerciseSet.secondExercise.name}, Rest for ${exerciseSet.restDurationInSeconds}s'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.timer),
-                      onPressed: () {
-                        // Implement set timer functionality
-                      },
-                    ),
-                  );
-                } else {
-                  // If the exerciseSet is not recognized, return an empty Container
-                  return Container();
+                // Check the type of the exercise set
+                switch (exerciseSet?.exerciseSetType) {
+                  case ExerciseSetType.straight:
+                  // Handle straight sets
+                    return ListTile(
+                      leading: CircleAvatar(child: Text('${setIndex + 1}')),
+                      title: Text('${exerciseSet?.reps ?? 'Unknown'} Reps'),
+                      subtitle: Text('Rest for ${exerciseSet?.restDurationInSeconds}s'),
+                      trailing: IconButton(
+                        icon: Icon(Icons.timer),
+                        onPressed: () {
+                          // Implement set timer functionality
+                        },
+                      ),
+                    );
+
+                  case ExerciseSetType.timed:
+                  // Handle timed sets
+                    return ListTile(
+                      leading: CircleAvatar(child: Text('${setIndex + 1}')),
+                      title: Text('Timed Set for ${exerciseSet?.timedSetInSeconds ?? 'Unknown'} Seconds'),
+                      subtitle: Text('Rest for ${exerciseSet?.restDurationInSeconds}s'),
+                      trailing: IconButton(
+                        icon: Icon(Icons.timer),
+                        onPressed: () {
+                          // Implement set timer functionality
+                        },
+                      ),
+                    );
+
+                  case ExerciseSetType.failure:
+                  // Handle failure sets
+                    return ListTile(
+                      leading: CircleAvatar(child: Text('${setIndex + 1}')),
+                      title: Text('Reps till Failure'),
+                      subtitle: Text('Rest for ${exerciseSet?.restDurationInSeconds}s'),
+                      trailing: IconButton(
+                        icon: Icon(Icons.timer),
+                        onPressed: () {
+                          // Implement set timer functionality
+                        },
+                      ),
+                    );
+
+                  default:
+                  // If the exerciseSet type is not recognized, return an empty Container
+                    return Container();
                 }
               },
             ),
           ),
+
 
         ],
       ),

@@ -5,52 +5,25 @@ import 'exercise.dart';
 part 'exercise_set.g.dart';
 
 @JsonEnum()
-enum ExerciseSetType { straightSet, superSet }
+enum ExerciseSetType { straight,timed,failure }
 
 @JsonSerializable()
 class ExerciseSet {
   final ExerciseSetType exerciseSetType;
   final int restDurationInSeconds;
 
-  ExerciseSet( {required this.restDurationInSeconds,required this.exerciseSetType,});
+
+  final int? reps;
+  final int? timedSetInSeconds;
+
+
+
+  ExerciseSet(  {required this.restDurationInSeconds,required this.exerciseSetType,this.reps, this.timedSetInSeconds,});
 
   Map<String, dynamic> toJson() => _$ExerciseSetToJson(this);
 
-  factory ExerciseSet.fromJson(Map<String, dynamic> json) => _$StraightSetFromJson(json);
+  factory ExerciseSet.fromJson(Map<String, dynamic> json) => _$ExerciseSetFromJson(json);
 
-}
-
-@JsonSerializable()
-class StraightSet extends ExerciseSet {
-  final int reps;
-
-  StraightSet({required super.restDurationInSeconds, required this.reps, required super.exerciseSetType});
-  factory StraightSet.fromJson(Map<String, dynamic> json) => _$StraightSetFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$StraightSetToJson(this);
-}
-
-@JsonSerializable()
-class SuperSet extends ExerciseSet {
-  final Exercise firstExercise;
-  final int firstExerciseReps;
-  final Exercise secondExercise;
-  final int secondExerciseReps;
-
-  SuperSet({
-    required super.restDurationInSeconds,
-    required this.secondExercise,
-    required this.secondExerciseReps,
-    required this.firstExercise,
-    required this.firstExerciseReps,
-    required super.exerciseSetType,
-  });
-
-  factory SuperSet.fromJson(Map<String, dynamic> json) => _$SuperSetFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$SuperSetToJson(this);
 }
 
 

@@ -8,22 +8,22 @@ part of 'week.dart';
 
 Week _$WeekFromJson(Map<String, dynamic> json) => Week(
       weekNumber: json['weekNumber'] as int?,
-      day1: Day.fromJson(json['day1'] as Map<String, dynamic>),
-      day2: Day.fromJson(json['day2'] as Map<String, dynamic>),
-      day3: Day.fromJson(json['day3'] as Map<String, dynamic>),
-      day4: Day.fromJson(json['day4'] as Map<String, dynamic>),
-      day5: Day.fromJson(json['day5'] as Map<String, dynamic>),
-      day6: Day.fromJson(json['day6'] as Map<String, dynamic>),
-      day7: Day.fromJson(json['day7'] as Map<String, dynamic>),
+      monday: Day.fromJson(json['monday'] as Map<String, dynamic>),
+      tuesday: Day.fromJson(json['tuesday'] as Map<String, dynamic>),
+      wednesday: Day.fromJson(json['wednesday'] as Map<String, dynamic>),
+      thursday: Day.fromJson(json['thursday'] as Map<String, dynamic>),
+      friday: Day.fromJson(json['friday'] as Map<String, dynamic>),
+      saturday: Day.fromJson(json['saturday'] as Map<String, dynamic>),
+      sunday: Day.fromJson(json['sunday'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$WeekToJson(Week instance) => <String, dynamic>{
       'weekNumber': instance.weekNumber,
-      'day1': instance.day1,
-      'day2': instance.day2,
-      'day3': instance.day3,
-      'day4': instance.day4,
-      'day5': instance.day5,
-      'day6': instance.day6,
-      'day7': instance.day7,
+      'monday': instance.monday,
+      'tuesday': instance.tuesday,
+      'wednesday': instance.wednesday,
+      'thursday': instance.thursday,
+      'friday': instance.friday,
+      'saturday': instance.saturday,
+      'sunday': instance.sunday,
     };

@@ -30,7 +30,7 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
   }
 
   Widget _buildWeekView(Week week, BuildContext context, int weekNumber) {
-    List<Day> days = [week.day1, week.day2, week.day3, week.day4, week.day5, week.day6, week.day7];
+    List<Day> days = [week.monday, week.tuesday, week.wednesday, week.thursday, week.friday, week.saturday, week.sunday];
 
     return Column(
       children: [

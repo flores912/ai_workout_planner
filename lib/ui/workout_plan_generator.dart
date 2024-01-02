@@ -195,13 +195,13 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         role: OpenAIChatMessageRole.user,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
             "Based on this workout criteria:$workoutCriteria\n"
-                " Create a week workout plan based on workout criteria provided by user.  Example of the expected JSON response:\n"
+                " Create a weekly workout plan based on workout criteria provided by user.  Example of the expected JSON response:\n"
                 "{\n"
-                "  'day1': { 'isRestDay': false "
+                "  'monday': { 'isRestDay': false "
                 "            'workoutSplit': Chest and Triceps},\n"
-                "  'day2': {'isRestDay': true"
+                "  'tuesday': {'isRestDay': true"
                 "           'workoutSplit': rest},\n"
-                "  'day3': { 'isRestDay': false "
+                "  'wednesday': { 'isRestDay': false "
                 "            'workoutSplit': Legs},\n"
                 "  ... (and so on for each day until day7)\n"
                 "}\n"
@@ -257,13 +257,13 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     required int dayNumber
   }) async {
     // Convert each day of the week to JSON
-    String day1Json = jsonEncode(week.day1.toJson());
-    String day2Json = jsonEncode(week.day2.toJson());
-    String day3Json = jsonEncode(week.day3.toJson());
-    String day4Json = jsonEncode(week.day4.toJson());
-    String day5Json = jsonEncode(week.day5.toJson());
-    String day6Json = jsonEncode(week.day6.toJson());
-    String day7Json = jsonEncode(week.day7.toJson());
+    String day1Json = jsonEncode(week.monday.toJson());
+    String day2Json = jsonEncode(week.tuesday.toJson());
+    String day3Json = jsonEncode(week.wednesday.toJson());
+    String day4Json = jsonEncode(week.thursday.toJson());
+    String day5Json = jsonEncode(week.friday.toJson());
+    String day6Json = jsonEncode(week.saturday.toJson());
+    String day7Json = jsonEncode(week.sunday.toJson());
 
     // System message request
 // System message request
@@ -416,26 +416,26 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     required String workoutCriteria,
     required Week week,
   }) async {
-    if (!week.day1.isRestDay) {
-    week.day1.workout =  await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 1);
+    if (!week.monday.isRestDay) {
+    week.monday.workout =  await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 1);
     }
-    if (!week.day2.isRestDay) {
-      week.day2.workout= await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 2);
+    if (!week.tuesday.isRestDay) {
+      week.tuesday.workout= await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 2);
     }
-    if (!week.day3.isRestDay) {
-      week.day3.workout= await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 3);
+    if (!week.wednesday.isRestDay) {
+      week.wednesday.workout= await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 3);
     }
-    if (!week.day4.isRestDay) {
-      week.day4.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 4);
+    if (!week.thursday.isRestDay) {
+      week.thursday.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 4);
     }
-    if (!week.day5.isRestDay) {
-      week.day5.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 5);
+    if (!week.friday.isRestDay) {
+      week.friday.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 5);
     }
-    if (!week.day6.isRestDay) {
-      week.day6.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 6);
+    if (!week.saturday.isRestDay) {
+      week.saturday.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 6);
     }
-    if (!week.day7.isRestDay) {
-      week.day7.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 7);
+    if (!week.sunday.isRestDay) {
+      week.sunday.workout=   await generateWorkoutOfTheDay(workoutCriteria: workoutCriteria, week: week, dayNumber: 7);
     }
   }
   Exercise? findClosestMatchExerciseByName(String name) {

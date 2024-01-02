@@ -44,8 +44,8 @@ class WorkoutPlanDetailsPage extends StatelessWidget {
             itemBuilder: (context, index) {
               Day day = days[index];
               return ListTile(
-                title: Text(day.isRestDay ? 'Rest Day' : 'Workout Day'),
-                subtitle: day.workout != null ? Text(day.workout!.name) : null,
+                title: Text(day.isRestDay ? 'Rest Day' : day.workout!.name),
+                subtitle: day.workout != null ? Text(day.workoutSplit) : null,
                 onTap: () {
                   Navigator.push(
                     context,

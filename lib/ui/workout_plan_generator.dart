@@ -203,7 +203,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                 "           'workoutSplit': rest},\n"
                 "  'day3': { 'isRestDay': false "
                 "            'workoutSplit': Legs},\n"
-                "  ... (and so on for each day of the week)\n"
+                "  ... (and so on for each day until day7)\n"
                 "}\n"
                 "Respond in this format.")]
     );

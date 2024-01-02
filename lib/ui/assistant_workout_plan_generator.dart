@@ -71,6 +71,7 @@ class _AssistantWorkoutPlanGeneratorState
   @override
   void initState() {
     super.initState();
+    initWorkoutCriteria();
     OpenAI.requestsTimeOut = const Duration(seconds: 60);
     OpenAI.showLogs = true;
     OpenAI.showResponsesLogs = true;

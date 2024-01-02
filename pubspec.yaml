@@ -1,6 +1,7 @@
 name: ai_workout_planner
 description: "This package helps apps leverage AI to plan personalized workout plans."
 version: 0.0.1
+publish_to: none
 homepage:
 
 environment:
@@ -8,6 +9,10 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  open_ai_assistant_wrapper:
+    git:
+      url: https://github.com/flores912/open_ai_assistant_wrapper.git
+      ref: master
 
   dart_openai: ^5.0.0
   expansion_tile_card: ^3.0.0

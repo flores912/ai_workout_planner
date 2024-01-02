@@ -6,6 +6,7 @@ import 'package:ai_workout_planner/models/workout.dart';
 import 'package:ai_workout_planner/ui/workout_plan_card.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
+import 'package:open_ai_assistant_wrapper/apis/client.dart';
 import 'package:string_similarity/string_similarity.dart';
 
 import '../models/exercise_set.dart';
@@ -456,4 +457,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       return null;
     }
   }
+
+
 }

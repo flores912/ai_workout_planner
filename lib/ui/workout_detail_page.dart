@@ -34,77 +34,56 @@ class WorkoutDetailPage extends StatelessWidget {
               ),
             ),
           ),
-          // Assuming `gifPath` is a property in Exercise model that holds the path to the GIF
-          Image.asset(
-            'exercises[0].gifPath', //todo add gif path
-            height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          ListTile(
-            title: Text(exercises[0].name),
-            subtitle: Text('Exercise 1 of ${exercises.length}'),
-          ),
           Expanded(
             child: ListView.builder(
-              itemCount: exercises[0].numberOfSets, // Assuming `numberOfSets` is a property in the Exercise model
-              itemBuilder: (context, setIndex) {
-                var exerciseSet = exercises[0].exerciseSet; // Assuming each Exercise has an ExerciseSet
-                // Check the type of the exercise set
-                switch (exerciseSet?.exerciseSetType) {
-                  case ExerciseSetType.straight:
-                  // Handle straight sets
-                    return ListTile(
-                      leading: CircleAvatar(child: Text('${setIndex + 1}')),
-                      title: Text('${exerciseSet?.reps ?? 'Unknown'} Reps'),
-                      subtitle: Text('Rest for ${exerciseSet?.restDurationInSeconds}s'),
-                      trailing: IconButton(
-                        icon: Icon(Icons.timer),
-                        onPressed: () {
-                          // Implement set timer functionality
-                        },
-                      ),
-                    );
-
-                  case ExerciseSetType.timed:
-                  // Handle timed sets
-                    return ListTile(
-                      leading: CircleAvatar(child: Text('${setIndex + 1}')),
-                      title: Text('Timed Set for ${exerciseSet?.timedSetInSeconds ?? 'Unknown'} Seconds'),
-                      subtitle: Text('Rest for ${exerciseSet?.restDurationInSeconds}s'),
-                      trailing: IconButton(
-                        icon: Icon(Icons.timer),
-                        onPressed: () {
-                          // Implement set timer functionality
-                        },
-                      ),
-                    );
-
-                  case ExerciseSetType.failure:
-                  // Handle failure sets
-                    return ListTile(
-                      leading: CircleAvatar(child: Text('${setIndex + 1}')),
-                      title: Text('Reps till Failure'),
-                      subtitle: Text('Rest for ${exerciseSet?.restDurationInSeconds}s'),
-                      trailing: IconButton(
-                        icon: Icon(Icons.timer),
-                        onPressed: () {
-                          // Implement set timer functionality
-                        },
-                      ),
-                    );
-
-                  default:
-                  // If the exerciseSet type is not recognized, return an empty Container
-                    return Container();
-                }
+              itemCount: exercises.length,
+              itemBuilder: (context, exerciseIndex) {
+                var exercise = exercises[exerciseIndex];
+                var exerciseSet = exercise.exerciseSet;
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text(exercise.name),
+                      subtitle: Text('Exercise ${exerciseIndex + 1} of ${exercises.length}'),
+                    ),
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(), // To prevent inner list scroll
+                      shrinkWrap: true,
+                      itemCount: exercise.numberOfSets,
+                      itemBuilder: (context, setIndex) {
+                        return ListTile(
+                          leading: CircleAvatar(child: Text('${setIndex + 1}')),
+                          title: _buildSetTitle(exerciseSet, setIndex),
+                          subtitle: Text('Rest for ${exerciseSet?.restDurationInSeconds}s'),
+                          trailing: IconButton(
+                            icon: Icon(Icons.timer),
+                            onPressed: () {
+                              // Implement set timer functionality
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
               },
             ),
           ),
-
-
         ],
       ),
     );
+  }
+
+  Widget _buildSetTitle(ExerciseSet? exerciseSet, int setIndex) {
+    switch (exerciseSet?.exerciseSetType) {
+      case ExerciseSetType.straight:
+        return Text('${exerciseSet?.reps ?? 'Unknown'} Reps');
+      case ExerciseSetType.timed:
+        return Text('Timed Set for ${exerciseSet?.timedSetInSeconds ?? 'Unknown'} Seconds');
+      case ExerciseSetType.failure:
+        return Text('Reps till Failure');
+      default:
+        return Text('Unknown Set Type');
+    }
   }
 }

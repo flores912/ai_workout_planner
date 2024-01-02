@@ -271,7 +271,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "      'numberOfSets': 4, // Integer value\n"
                   "      'exerciseSet': {\n"
                   "         'exerciseSetType': 'straight',\n"
-                  "         'restDurationInSeconds': 90, // Integer value\n"
+                  "         'restDuration': 90, // Integer value(Seconds)\n"
                   "         'reps': 12 // integer value\n"
                   "      }\n"
                   "    },\n"
@@ -282,7 +282,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "      'numberOfSets': 3, // Integer value\n"
                   "      'exerciseSet': {\n"
                   "         'exerciseSetType': 'timed',\n"
-                  "         'restDurationInSeconds': 60, // Integer value\n"
+                  "         'restDuration': 60, // Integer value(Seconds)\n"
                   "         'timedSetInSeconds': 30 // Optional integer value\n"
                   "      }\n"
                   "    },\n"
@@ -293,7 +293,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "      'numberOfSets': 2, // Integer value\n"
                   "      'exerciseSet': {\n"
                   "         'exerciseSetType': 'failure',\n"
-                  "         'restDurationInSeconds': 75 // Integer value\n"
+                  "         'restDuration': 75 // Integer value(Seconds)\n"
                   "         // 'reps' field is not applicable for 'failure' type\n"
                   "      }\n"
                   "    }\n"
@@ -364,21 +364,21 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     switch (setType) {
       case ExerciseSetType.straight:
         return ExerciseSet(
-          restDurationInSeconds: json['restDurationInSeconds'],
+          restDurationInSeconds: json['restDuration'],
           reps: json['reps'], // Note that this is nullable.
           exerciseSetType: setType,
         );
 
       case ExerciseSetType.timed:
         return ExerciseSet(
-          restDurationInSeconds: json['restDurationInSeconds'],
+          restDurationInSeconds: json['restDuration'],
           timedSetInSeconds: json['timedSetInSeconds'], // Note that this is nullable.
           exerciseSetType: setType,
         );
 
       case ExerciseSetType.failure:
         return ExerciseSet(
-          restDurationInSeconds: json['restDurationInSeconds'],
+          restDurationInSeconds: json['restDuration'],
           exerciseSetType: setType,
           // 'reps' and 'timedSetInSeconds' are not applicable for 'failure' type.
         );

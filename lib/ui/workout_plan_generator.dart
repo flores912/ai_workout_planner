@@ -310,7 +310,6 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
       temperature: 0.2,
-      maxTokens:5000 ,
       messages: [systemMessageRequest],
     );
 

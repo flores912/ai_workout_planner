@@ -272,7 +272,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                   "      'exerciseSet': {\n"
                   "         'exerciseSetType': 'straight',\n"
                   "         'restDurationInSeconds': 90, // Integer value\n"
-                  "         'reps': 12 // Optional integer value\n"
+                  "         'reps': 12 // integer value\n"
                   "      }\n"
                   "    },\n"
                   "    // Example of a 'timed' set exercise\n"

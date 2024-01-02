@@ -189,24 +189,20 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
          - exercise will contain setType and according to the set type ai will provide the values
 
      */
-    // Construct the system prompt with a JSON example
     OpenAIChatCompletionChoiceMessageModel userMessageRequest =
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "Based on this workout criteria:$workoutCriteria\n"
-                " Create a weekly plan based on workout criteria provided by user.This is the one and only single object you should respond with (only 1 week object like the one below)  Example of the expected JSON object response:\n"
+            "Based on this workout criteria: $workoutCriteria, create a weekly workout plan. The response should strictly adhere to the structure of the 'Week' class, and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
                 "{\n"
-                "  'monday': { 'isRestDay': false "
-                "            'workoutSplit': Chest and Triceps},\n"
-                "  'tuesday': {'isRestDay': true"
-                "           'workoutSplit': rest},\n"
-                "  'wednesday': { 'isRestDay': false "
-                "            'workoutSplit': Legs},\n"
-                "  ... (and so on for each day )\n"
+                "  'monday': {'isRestDay': false, 'workoutSplit': 'Chest and Triceps'},\n"
+                "  'tuesday': {'isRestDay': true, 'workoutSplit': 'Rest'},\n"
+                "  'wednesday': {'isRestDay': false, 'workoutSplit': 'Legs'},\n"
+                "  // continue for each day of the week\n"
                 "}\n"
-                "Respond in this format.")]
+                "Please respond only in this format and avoid adding any extra details.")]
     );
+
 
 
 

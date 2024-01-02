@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ai_workout_planner/ui/workout_plan_card.dart';
+import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 import 'package:open_ai_assistant_wrapper/apis/assistants/assistants_api.dart';
 import 'package:open_ai_assistant_wrapper/apis/client.dart';
@@ -69,14 +71,33 @@ class _AssistantWorkoutPlanGeneratorState
   @override
   void initState() {
     super.initState();
-
+    OpenAI.requestsTimeOut = const Duration(seconds: 60);
+    OpenAI.showLogs = true;
+    OpenAI.showResponsesLogs = true;
     initAssistant();
     initThread();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return FutureBuilder<WorkoutPlan>(
+        future: generateWorkoutPlan(workoutCriteria:workoutCriteria),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Display a loading indicator while the future is in progress
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            // Display an error message if the future completes with an error
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (snapshot.hasData) {
+            // If the future completes with data, display your WorkoutPlanCard
+            return WorkoutPlanCard(workoutPlan: snapshot.data!);
+          } else {
+            // This case handles a null data scenario
+            return const Center(child: Text("No workout plan available."));
+          }
+        }
+    );
   }
 
   initAssistant() async {
@@ -190,12 +211,24 @@ class _AssistantWorkoutPlanGeneratorState
   }) async {
     // Convert each day of the week to JSON
     String day1Json = jsonEncode(week.day1.toJson());
+    String day2Json = jsonEncode(week.day2.toJson());
+    String day3Json = jsonEncode(week.day3.toJson());
+    String day4Json = jsonEncode(week.day4.toJson());
+    String day5Json = jsonEncode(week.day5.toJson());
+    String day6Json = jsonEncode(week.day6.toJson());
+    String day7Json = jsonEncode(week.day7.toJson());
     // ...similarly for other days
 
     // Construct the user prompt with a JSON example
     var content = "You are provided with a weekly workout schedule, detailed in the following JSON data for each day:\n"
         "Day 1: $day1Json\n"
-    // ...similarly for other days
+        "Day 2: $day2Json\n"
+        "Day 3: $day3Json\n"
+        "Day 4: $day4Json\n"
+        "Day 5: $day5Json\n"
+        "Day 6: $day6Json\n"
+        "Day 7: $day7Json\n"
+
         "Based on the workout criteria: $workoutCriteria and the current week's schedule, generate a comprehensive workout plan for day number $dayNumber. The workout plan should be formatted as a JSON object. Each exercise in the plan can be of type 'straight', 'timed', or 'failure'. Here is the structure for the expected JSON response:\n\n"
         "{\n"
         "  'name': 'Workout Name',\n"

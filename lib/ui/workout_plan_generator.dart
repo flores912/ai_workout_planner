@@ -74,8 +74,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         'Medical Considerations: ${widget.medicalConsiderations}\n'
        'Time Availability: ${widget.timeAvailability}\n'
         'Number of Workouts Per Week: ${widget.numberOfWorkoutsPerWeek}\n'
-        'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
-      'Preferred Rest Days: ${widget.preferredRestDays}\n'
+      //   'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
+      // 'Preferred Rest Days: ${widget.preferredRestDays}\n'
        'Workout Duration: ${widget.workoutDuration.inMinutes} minutes'
         'Weeks: ${widget.numberOfWeeks} weeks';
     OpenAI.apiKey = widget.apiKey;

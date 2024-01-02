@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:ai_workout_planner/ui/workout_plan_card.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
-import 'package:open_ai_assistant_wrapper/apis/assistants/assistants_api.dart';
 import 'package:open_ai_assistant_wrapper/apis/client.dart';
 import 'package:open_ai_assistant_wrapper/apis/runs/runs_api.dart';
 import 'package:open_ai_assistant_wrapper/apis/threads/role_enum.dart';

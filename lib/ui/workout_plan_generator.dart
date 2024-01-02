@@ -182,9 +182,11 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
                 " Create a weekly workout plan based on workout criteria provided by user. Make sure you keep in mind rest time between each day(don't have intensive days next to each other working out same muscles). Format your response as a JSON object that matches the structure of a 'Week' class. Example of the expected JSON response:\n"
                 "{\n"
                 "  'day1': { 'isRestDay': false "
-                "            'workoutSplit': Upper},\n"
+                "            'workoutSplit': Chest and Triceps},\n"
                 "  'day2': {'isRestDay': true"
                 "           'workoutSplit': rest},\n"
+                "  'day3': { 'isRestDay': false "
+                "            'workoutSplit': Legs},\n"
                 "  ... (and so on for each day of the week)\n"
                 "}\n"
                 "Respond in this format.")]
@@ -475,7 +477,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     }
 
     // You can adjust the threshold value as needed
-    if (highestSimilarity > 0.1) {
+    if (highestSimilarity > 0.4) {
       return closestMatch;
     } else {
       return null;

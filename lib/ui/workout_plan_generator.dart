@@ -64,14 +64,14 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     // Constructing the workout criteria string
     workoutCriteria = 'Fitness Level: ${widget.fitnessLevel}\n'
         'Workout Goals: ${widget.workoutGoals}\n'
-       // 'Preferred Exercises: ${widget.preferredExercises}\n'
-        //'Equipment Availability: ${widget.equipmentAvailability}\n'
-        //'Medical Considerations: ${widget.medicalConsiderations}\n'
-       // 'Time Availability: ${widget.timeAvailability}\n'
+       'Preferred Exercises: ${widget.preferredExercises}\n'
+        'Equipment Availability: ${widget.equipmentAvailability}\n'
+        'Medical Considerations: ${widget.medicalConsiderations}\n'
+       'Time Availability: ${widget.timeAvailability}\n'
         'Number of Workouts Per Week: ${widget.numberOfWorkoutsPerWeek}\n'
         'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
-      // 'Preferred Rest Days: ${widget.preferredRestDays}\n'
-       // 'Workout Duration: ${widget.workoutDuration.inMinutes} minutes'
+      'Preferred Rest Days: ${widget.preferredRestDays}\n'
+       'Workout Duration: ${widget.workoutDuration.inMinutes} minutes'
         'Weeks: ${widget.numberOfWeeks} weeks';
     OpenAI.apiKey = widget.apiKey;
     if(widget.organizationId !=null){

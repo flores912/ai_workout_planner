@@ -69,14 +69,14 @@ class _AssistantWorkoutPlanGeneratorState
   late Thread thread;
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
     initWorkoutCriteria();
     OpenAI.requestsTimeOut = const Duration(seconds: 60);
     OpenAI.showLogs = true;
     OpenAI.showResponsesLogs = true;
-    initAssistant();
-    initThread();
+   await initAssistant();
+   await initThread();
   }
 
   @override

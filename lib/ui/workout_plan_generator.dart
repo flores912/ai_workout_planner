@@ -193,7 +193,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "Based on this number of workouts per week criteria: $workoutCriteria, create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
+            "Based on this number of workouts per week criteria: $workoutCriteria,and keeping in mind Workouts Per Week:${widget.numberOfWorkoutsPerWeek},Preferred Rest Days: ${widget.preferredRestDays} and Preferred Workout Days: ${widget.preferredWorkoutDays}, create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
                 "{\n"
                 "  'monday': {'isRestDay': false, 'workoutSplit': 'Chest and Triceps'},\n"
                 "  'tuesday': {'isRestDay': true, 'workoutSplit': 'Rest'},\n"

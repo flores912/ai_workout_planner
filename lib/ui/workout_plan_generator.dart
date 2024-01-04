@@ -74,8 +74,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         'Medical Considerations: ${widget.medicalConsiderations}\n'
        'Time Availability: ${widget.timeAvailability}\n'
         'Number of Workouts Per Week: ${widget.numberOfWorkoutsPerWeek}\n'
-      //   'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
-      // 'Preferred Rest Days: ${widget.preferredRestDays}\n'
+        'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
+      'Preferred Rest Days: ${widget.preferredRestDays}\n'
        'Workout Duration: ${widget.workoutDuration.inMinutes} minutes'
         'Weeks: ${widget.numberOfWeeks} weeks';
     OpenAI.apiKey = widget.apiKey;
@@ -193,7 +193,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "Based on this number of workouts per week criteria: ${widget.numberOfWorkoutsPerWeek} and Workout Plan Goals: ${widget.workoutGoals}, create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
+            "Based on this number of workouts per week criteria: $workoutCriteria, create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
                 "{\n"
                 "  'monday': {'isRestDay': false, 'workoutSplit': 'Chest and Triceps'},\n"
                 "  'tuesday': {'isRestDay': true, 'workoutSplit': 'Rest'},\n"

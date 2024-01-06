@@ -87,23 +87,25 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
   }
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<WorkoutPlan>(
-        future: generateWorkoutPlan(workoutCriteria:workoutCriteria),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // Display a loading indicator while the future is in progress
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            // Display an error message if the future completes with an error
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (snapshot.hasData) {
-            // If the future completes with data, display your WorkoutPlanCard
-            return WorkoutPlanCard(workoutPlan: snapshot.data!);
-          } else {
-            // This case handles a null data scenario
-            return const Center(child: Text("No workout plan available."));
+    return Material(
+      child: FutureBuilder<WorkoutPlan>(
+          future: generateWorkoutPlan(workoutCriteria:workoutCriteria),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Display a loading indicator while the future is in progress
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              // Display an error message if the future completes with an error
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else if (snapshot.hasData) {
+              // If the future completes with data, display your WorkoutPlanCard
+              return WorkoutPlanCard(workoutPlan: snapshot.data!);
+            } else {
+              // This case handles a null data scenario
+              return const Center(child: Text("No workout plan available."));
+            }
           }
-        }
+      ),
     );
   }
 

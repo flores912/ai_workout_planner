@@ -3,17 +3,14 @@ import 'dart:convert';
 import 'package:ai_workout_planner/consts/exercises.dart';
 import 'package:ai_workout_planner/models/exercise.dart';
 import 'package:ai_workout_planner/models/workout.dart';
-import 'package:ai_workout_planner/ui/workout_plan_card.dart';
 import 'package:dart_openai/dart_openai.dart';
-import 'package:flutter/material.dart';
-import 'package:open_ai_assistant_wrapper/apis/client.dart';
 import 'package:string_similarity/string_similarity.dart';
 
 import '../models/exercise_set.dart';
 import '../models/week.dart';
 import '../models/workout_plan.dart';
 
-class WorkoutPlanGenerator extends StatefulWidget {
+class WorkoutPlanGenerator {
   final String apiKey;
   final String? organizationId;
 
@@ -26,13 +23,14 @@ class WorkoutPlanGenerator extends StatefulWidget {
   final int numberOfWeeks;
   final Duration workoutDuration;
 
-  final String systemMessage;
+  final String aiInstructions;
 
-  const WorkoutPlanGenerator({
-    super.key,
+  final OpenAIChatCompletionChoiceMessageModel systemAiMessage;
+
+   WorkoutPlanGenerator({
     required this.apiKey,
     this.organizationId,
-    this.systemMessage = 'You are a Fitness Expert.',
+    this.aiInstructions = 'You are a Fitness Expert.',
     this.fitnessLevel = 'beginner', // Default value
     this.workoutGoals = 'Increase strength and muscle mass', // Updated default value
     this.equipmentAvailability = 'Limited home equipment', // Updated default value
@@ -40,77 +38,44 @@ class WorkoutPlanGenerator extends StatefulWidget {
     this.preferredWorkoutDays = 'Monday, Wednesday, Friday', // Updated default value
     this.workoutDuration = const Duration(minutes: 30),
     this.numberOfWeeks = 6,// Default value
-  });
-  @override
-  WorkoutPlanGeneratorState createState() => WorkoutPlanGeneratorState();
-}
+  }): systemAiMessage = OpenAIChatCompletionChoiceMessageModel(
+      role: OpenAIChatMessageRole.system,
+      content: [
+        OpenAIChatCompletionChoiceMessageContentItemModel.text(
+            '${aiInstructions}\n '
+                'Format your responses in JSON in the structure the user wants.'
+        )
+      ]);
 
 
-class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
+
+
 
   //late List<String>selectedExercises;
-  late String workoutCriteria;
 
-  late OpenAIChatCompletionChoiceMessageModel systemMessage;
 
-  @override
-  void initState() {
-    super.initState();
 
+
+
+
+  Future<WorkoutPlan> generateWorkoutPlan({required String workoutCriteria}) async {
 
     // Constructing the workout criteria string
-    workoutCriteria = 'Fitness Level: ${widget.fitnessLevel}\n'
-        'Workout Goals: ${widget.workoutGoals}\n'
-        'Equipment Availability: ${widget.equipmentAvailability}\n'
-        'Medical Considerations: ${widget.medicalConsiderations}\n'
-        'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
-       'Workout Duration: ${widget.workoutDuration.inMinutes} minutes'
-        'Weeks: ${widget.numberOfWeeks} weeks';
-    OpenAI.apiKey = widget.apiKey;
-    if(widget.organizationId !=null){
-      OpenAI.organization = widget.organizationId;
+    workoutCriteria = 'Fitness Level: ${fitnessLevel}\n'
+        'Workout Goals: ${workoutGoals}\n'
+        'Equipment Availability: ${equipmentAvailability}\n'
+        'Medical Considerations: ${medicalConsiderations}\n'
+        'Preferred Workout Days: ${preferredWorkoutDays}\n'
+        'Workout Duration: ${workoutDuration.inMinutes} minutes'
+        'Weeks: ${numberOfWeeks} weeks';
+    OpenAI.apiKey = apiKey;
+    if(organizationId !=null){
+      OpenAI.organization = organizationId;
     }
     OpenAI.requestsTimeOut = const Duration(seconds: 60);
     OpenAI.showLogs = true;
     OpenAI.showResponsesLogs = true;
 
-     systemMessage = OpenAIChatCompletionChoiceMessageModel(
-        role: OpenAIChatMessageRole.system,
-        content: [
-          OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              '${widget.systemMessage}\n '
-                  'Format your responses in JSON in the structure the user wants.'
-          )
-        ]
-    );
-
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: FutureBuilder<WorkoutPlan>(
-          future: generateWorkoutPlan(workoutCriteria:workoutCriteria),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              // Display a loading indicator while the future is in progress
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              // Display an error message if the future completes with an error
-              return Center(child: Text("Error: ${snapshot.error}"));
-            } else if (snapshot.hasData) {
-              // If the future completes with data, display your WorkoutPlanCard
-              return WorkoutPlanCard(workoutPlan: snapshot.data!);
-            } else {
-              // This case handles a null data scenario
-              return const Center(child: Text("No workout plan available."));
-            }
-          }
-      ),
-    );
-  }
-
-
-  Future<WorkoutPlan> generateWorkoutPlan({required String workoutCriteria}) async {
 
     //selectedExercises = await selectExercisesForWorkoutPlan(workoutCriteria: workoutCriteria);
     // System message request for generating a workout plan
@@ -138,7 +103,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       temperature: 0.5,
       n: 1,
       messages: [
-        systemMessage,
+        systemAiMessage,
         userMessageRequest,
       ],
     );
@@ -183,7 +148,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "Based on this number of workouts per week criteria: $workoutCriteria,and keeping in mind Preferred Workout Days: ${widget.preferredWorkoutDays}, create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
+            "Based on this number of workouts per week criteria: $workoutCriteria,and keeping in mind Preferred Workout Days: ${preferredWorkoutDays}, create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
                 "{\n"
                 "  'monday': {'isRestDay': false, 'workoutSplit': 'Chest and Triceps'},\n"
                 "  'tuesday': {'isRestDay': true, 'workoutSplit': 'Rest'},\n"
@@ -206,7 +171,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       n: 1,
 
       messages: [
-        systemMessage,
+        systemAiMessage,
         userMessageRequest,
       ],
     );
@@ -318,7 +283,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
       temperature: 0.8,
       n: 1,
       messages: [
-        systemMessage,
+        systemAiMessage,
         userMessageRequest],
     );
 

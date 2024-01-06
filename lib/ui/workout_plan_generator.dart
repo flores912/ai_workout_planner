@@ -58,10 +58,10 @@ class WorkoutPlanGenerator {
 
 
 
-  Future<WorkoutPlan> generateWorkoutPlan({required String workoutCriteria}) async {
+  Future<WorkoutPlan> generateWorkoutPlan() async {
 
     // Constructing the workout criteria string
-    workoutCriteria = 'Fitness Level: ${fitnessLevel}\n'
+   String workoutCriteria = 'Fitness Level: ${fitnessLevel}\n'
         'Workout Goals: ${workoutGoals}\n'
         'Equipment Availability: ${equipmentAvailability}\n'
         'Medical Considerations: ${medicalConsiderations}\n'

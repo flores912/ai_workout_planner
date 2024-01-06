@@ -6,16 +6,16 @@ import 'package:ai_workout_planner/ui/workout_plan_details_page.dart'; // Import
 
 class WorkoutPlanCard extends StatelessWidget {
   final WorkoutPlan workoutPlan;
-  final Color titleBackgroundColor;
+  Color? titleBackgroundColor;
   final TextStyle titleTextStyle;
   final EdgeInsets titlePadding;
   final Icon leadingIcon;
   final TextStyle subtitleTextStyle;
 
-  const WorkoutPlanCard({
+  WorkoutPlanCard({
     super.key,
     required this.workoutPlan,
-    this.titleBackgroundColor = Colors.blueAccent,
+    this.titleBackgroundColor,
     this.titleTextStyle = const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
     this.titlePadding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     this.leadingIcon = const Icon(Icons.fitness_center),
@@ -24,6 +24,7 @@ class WorkoutPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    titleBackgroundColor ??= Theme.of(context).primaryColor;
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -35,7 +36,7 @@ class WorkoutPlanCard extends StatelessWidget {
       },
       child: Card(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Title with background color
             Container(

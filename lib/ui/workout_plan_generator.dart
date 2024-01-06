@@ -20,13 +20,9 @@ class WorkoutPlanGenerator extends StatefulWidget {
   // Additional optional parameters with default values
   final String fitnessLevel;
   final String workoutGoals;
-  final String preferredExercises;
   final String equipmentAvailability;
   final String medicalConsiderations;
-  final String timeAvailability;
-  final int numberOfWorkoutsPerWeek;
   final String preferredWorkoutDays;
-  final String preferredRestDays;
   final int numberOfWeeks;
   final Duration workoutDuration;
 
@@ -39,13 +35,9 @@ class WorkoutPlanGenerator extends StatefulWidget {
     this.systemMessage = 'You are a Fitness Expert.',
     this.fitnessLevel = 'beginner', // Default value
     this.workoutGoals = 'Increase strength and muscle mass', // Updated default value
-    this.preferredExercises = 'Bodyweight exercises, Cardio', // Updated default value
     this.equipmentAvailability = 'Limited home equipment', // Updated default value
     this.medicalConsiderations = 'None', // Updated default value
-    this.timeAvailability = '30-60 minutes per session', // Updated default value
-    this.numberOfWorkoutsPerWeek = 3, // Default value
     this.preferredWorkoutDays = 'Monday, Wednesday, Friday', // Updated default value
-    this.preferredRestDays = 'Weekends', // Updated default value
     this.workoutDuration = const Duration(minutes: 30),
     this.numberOfWeeks = 6,// Default value
   });
@@ -69,13 +61,9 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     // Constructing the workout criteria string
     workoutCriteria = 'Fitness Level: ${widget.fitnessLevel}\n'
         'Workout Goals: ${widget.workoutGoals}\n'
-       'Preferred Exercises: ${widget.preferredExercises}\n'
         'Equipment Availability: ${widget.equipmentAvailability}\n'
         'Medical Considerations: ${widget.medicalConsiderations}\n'
-       'Time Availability: ${widget.timeAvailability}\n'
-        'Number of Workouts Per Week: ${widget.numberOfWorkoutsPerWeek}\n'
         'Preferred Workout Days: ${widget.preferredWorkoutDays}\n'
-      'Preferred Rest Days: ${widget.preferredRestDays}\n'
        'Workout Duration: ${widget.workoutDuration.inMinutes} minutes'
         'Weeks: ${widget.numberOfWeeks} weeks';
     OpenAI.apiKey = widget.apiKey;
@@ -193,7 +181,7 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "Based on this number of workouts per week criteria: $workoutCriteria,and keeping in mind Workouts Per Week:${widget.numberOfWorkoutsPerWeek},Preferred Rest Days: ${widget.preferredRestDays} and Preferred Workout Days: ${widget.preferredWorkoutDays}, create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
+            "Based on this number of workouts per week criteria: $workoutCriteria,and keeping in mind Preferred Workout Days: ${widget.preferredWorkoutDays}, create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
                 "{\n"
                 "  'monday': {'isRestDay': false, 'workoutSplit': 'Chest and Triceps'},\n"
                 "  'tuesday': {'isRestDay': true, 'workoutSplit': 'Rest'},\n"
@@ -351,6 +339,8 @@ class WorkoutPlanGeneratorState extends State<WorkoutPlanGenerator> {
         Exercise? foundExercise = findClosestMatchExerciseByName(exerciseName);
 
         if (foundExercise == null) {
+
+          //todo if exercise not found create a new exercise obj???
           print('Exercise not found: $exerciseName');
           continue;
         }

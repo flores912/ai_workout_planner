@@ -31,7 +31,7 @@ int?index;
   });
 
   //path to gif demo asset
- String get gifAsset => 'lib/assets/exercise_gifs/exercise_$id.gif';
+ String get gifAsset => 'packages/ai_workout_planner/lib/assets/exercise_gifs/exercise_$id.gif';
 
 
 factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);

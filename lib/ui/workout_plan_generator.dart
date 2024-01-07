@@ -27,7 +27,10 @@ class WorkoutPlanGenerator {
 
   final OpenAIChatCompletionChoiceMessageModel systemAiMessage;
 
-   WorkoutPlanGenerator({
+  List<OpenAIChatCompletionChoiceMessageModel> messageHistory = [];
+
+
+  WorkoutPlanGenerator({
     required this.apiKey,
     this.organizationId,
     this.aiInstructions = 'You are a Fitness Expert.',
@@ -59,6 +62,7 @@ class WorkoutPlanGenerator {
 
 
   Future<WorkoutPlan> generateWorkoutPlan() async {
+    messageHistory.add(systemAiMessage);
 
     // Constructing the workout criteria string
    String workoutCriteria = 'Fitness Level: ${fitnessLevel}\n'
@@ -94,21 +98,26 @@ class WorkoutPlanGenerator {
         ]
     );
 
-
+messageHistory.add(userMessageRequest);
 
     // OpenAI Chat API call
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
       temperature: 0.3,
-      messages: [
-        systemAiMessage,
-        userMessageRequest,
-      ],
+      messages: messageHistory,
     );
 
     // Extracting response and creating WorkoutPlan object
     final message = chat.choices.first.message;
+
+    // Add the AI response to the message history.
+    messageHistory.add(OpenAIChatCompletionChoiceMessageModel(
+        role: OpenAIChatMessageRole.assistant,
+        content: [
+          OpenAIChatCompletionChoiceMessageContentItemModel.text(message.content!.first.text ?? 'No response')
+        ]
+    ));
     WorkoutPlan workoutPlan;
 
     if (message.content!.first.text != null) {
@@ -160,6 +169,7 @@ class WorkoutPlanGenerator {
 
 
 
+    messageHistory.add(userMessageRequest);
 
 
 
@@ -169,10 +179,7 @@ class WorkoutPlanGenerator {
       temperature: 0.2,
       n: 1,
 
-      messages: [
-        systemAiMessage,
-        userMessageRequest,
-      ],
+      messages: messageHistory
     );
 
 
@@ -189,7 +196,15 @@ class WorkoutPlanGenerator {
       Map<String, dynamic> jsonResponse = jsonDecode(text);
       print("API response: $jsonResponse");
 
-     week = Week.fromJson(jsonResponse);
+      week = Week.fromJson(jsonResponse);
+
+      // Add the AI response to the message history.
+      messageHistory.add(OpenAIChatCompletionChoiceMessageModel(
+          role: OpenAIChatMessageRole.assistant,
+          content: [
+            OpenAIChatCompletionChoiceMessageContentItemModel.text(message.content!.first.text ?? 'No response')
+          ]
+      ));
 
    await generateWorkoutsForWeek(workoutCriteria: workoutCriteria, week: week);
 
@@ -214,6 +229,7 @@ class WorkoutPlanGenerator {
     String day5Json = jsonEncode(week.friday.toJson());
     String day6Json = jsonEncode(week.saturday.toJson());
     String day7Json = jsonEncode(week.sunday.toJson());
+
 
     // System message request
 // System message request
@@ -276,18 +292,27 @@ class WorkoutPlanGenerator {
     );
     // User message request
 
+
+    messageHistory.add(userMessageRequest);
     final chat = await OpenAI.instance.chat.create(
       responseFormat: {"type": "json_object"},
       model: "gpt-3.5-turbo-1106",
       temperature: 0.8,
       n: 1,
-      messages: [
-        systemAiMessage,
-        userMessageRequest],
+      messages: messageHistory
     );
+
 
     late Workout workoutOfDay;
     final message = chat.choices.first.message;
+
+    // Add the AI response to the message history.
+    messageHistory.add(OpenAIChatCompletionChoiceMessageModel(
+        role: OpenAIChatMessageRole.assistant,
+        content: [
+          OpenAIChatCompletionChoiceMessageContentItemModel.text(message.content!.first.text ?? 'No response')
+        ]
+    ));
 
     if (message.content!.first.text != null) {
       String text = message.content!.first.text!;
@@ -403,7 +428,7 @@ class WorkoutPlanGenerator {
     }
 
     // You can adjust the threshold value as needed
-    if (highestSimilarity > 0.4) {
+    if (highestSimilarity > 0.6) {
       return closestMatch;
     } else {
       return null;

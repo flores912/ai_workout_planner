@@ -30,6 +30,10 @@ int?index;
     this.numberOfSets,
   });
 
+  //path to gif demo asset
+ String get gifAsset => 'lib/assets/exercise_gifs/exercise_$id.gif';
+
+
 factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
 Map<String, dynamic> toJson() => _$ExerciseToJson(this);
 }

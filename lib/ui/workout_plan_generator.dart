@@ -156,7 +156,7 @@ messageHistory.add(userMessageRequest);
     OpenAIChatCompletionChoiceMessageModel(
         role: OpenAIChatMessageRole.user,
         content: [OpenAIChatCompletionChoiceMessageContentItemModel.text(
-            "Based on this number of workouts per week criteria: $workoutCriteria,and keeping in mind Preferred Workout Days: ${preferredWorkoutDays}, create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
+            "Based on this number of workouts per week criteria and keeping in mind Preferred Workout Days create a weekly workout plan. The response should strictly adhere to the structure of the example provided. and should not include any additional details such as sets, reps, distances, or durations. Simply specify if each day is a rest day or not, and if not, provide the workout split for the day. Here is an example of the expected JSON object response:\n"
                 "{\n"
                 "  'monday': {'isRestDay': false, 'workoutSplit': 'Chest and Triceps'},\n"
                 "  'tuesday': {'isRestDay': true, 'workoutSplit': 'Rest'},\n"
@@ -238,15 +238,8 @@ messageHistory.add(userMessageRequest);
         role: OpenAIChatMessageRole.user,
         content: [
           OpenAIChatCompletionChoiceMessageContentItemModel.text(
-              "You are provided with a weekly workout schedule, detailed in the following JSON data for each day:\n"
-                  "Day 1: $day1Json\n"
-                  "Day 2: $day2Json\n"
-                  "Day 3: $day3Json\n"
-                  "Day 4: $day4Json\n"
-                  "Day 5: $day5Json\n"
-                  "Day 6: $day6Json\n"
-                  "Day 7: $day7Json\n\n"
-                  "Based on the workout criteria: $workoutCriteria and the current week's schedule, generate a comprehensive workout plan for day number $dayNumber. The workout plan should be formatted as a JSON object. Each exercise in the plan can be of type 'straight', 'timed', or 'failure'. Here is the structure for the expected JSON response:\n\n"
+
+                  "Based on the workout criteria and the current week's schedule, generate a comprehensive workout plan for day number $dayNumber. The workout plan should be formatted as a JSON object. Each exercise in the plan can be of type 'straight', 'timed', or 'failure'. Here is the structure for the expected JSON response:\n\n"
                   "{\n"
                   "  'name': 'Workout Name',\n"
                   "  'exercises': [\n"
